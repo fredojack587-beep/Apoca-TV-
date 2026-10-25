@@ -12,28 +12,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Prepare project
-        run: |
-          mkdir -p www
-          cp index.html www/index.html
-          npm install @capacitor/core@6 @capacitor/cli@6
-          npm install @capacitor/android@6
-          npx cap add android
-          npx cap sync android
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+
+      - name: Prepare web files
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+          npm init -y
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+
+      - name: Configure Capacitor
+        run: |
+          npx cap add android
+          npx cap sync android
 
       - name: Build APK
         run: |
