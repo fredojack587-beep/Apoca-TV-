@@ -2,287 +2,225 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080d1b">
-  <title>Apoca TV</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 20px;
-      background: #080d1b; color: white;
-      font-family: Arial, sans-serif;
-    }
-    header { text-align: center; padding: 15px 0; }
-    h1 { font-size: 36px; margin: 8px; }
-    header p { color: #b9c4d9; }
-    .cards {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 12px; max-width: 900px; margin: 25px auto;
-    }
-    button, input, select {
-      font: inherit; border-radius: 12px;
-    }
-    .category {
-      min-height: 75px; border: 1px solid #ffffff30;
-      color: white; font-weight: bold; cursor: pointer;
-    }
-    .live { background: #1769e0; }
-    .movies { background: #d94c54; }
-    .series { background: #7044cc; }
-    #status { text-align: center; color: #b9c4d9; margin: 18px 0; }
-    .player-wrap { max-width: 950px; margin: auto; }
-    video {
-      width: 100%; max-height: 520px; background: black;
-      border-radius: 14px; aspect-ratio: 16 / 9;
-    }
-    #nowPlaying { margin: 12px 0; font-weight: bold; }
-    .tools {
-      max-width: 950px; margin: 22px auto;
-      display: flex; gap: 10px; flex-wrap: wrap;
-    }
-    input, select {
-      background: #172238; color: white; border: 1px solid #ffffff30;
-      padding: 14px; min-width: 0;
-    }
-    input { flex: 1; }
-    select { width: 100%; }
-    #channels {
-      max-width: 950px; margin: 15px auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 10px;
-    }
-    .channel {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px; min-height: 68px; text-align: left;
-      background: #172238; color: white;
-      border: 1px solid #ffffff20; cursor: pointer;
-    }
-    .channel:focus, .channel:hover { border-color: #3d91ff; background: #203455; }
-    .logo {
-      width: 42px; height: 42px; object-fit: contain;
-      background: #0b1325; border-radius: 8px; flex-shrink: 0;
-    }
-    .channel-name { font-size: 14px; overflow-wrap: anywhere; }
-    .empty { color: #b9c4d9; text-align: center; grid-column: 1 / -1; }
-    @media (max-width: 600px) {
-      body { padding: 12px; }
-      h1 { font-size: 29px; }
-      .cards { grid-template-columns: 1fr; }
-      .category { min-height: 58px; }
-      #channels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d1b">
+<title>Apoca TV</title>
+<style>
+:root{--bg:#080d1b;--panel:#111a2d;--blue:#2878ff;--text:#fff;--muted:#9baac4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer;color:white;border:0}
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+header{height:76px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:#0d1527;border-bottom:1px solid #ffffff12}
+.logo{font-size:26px;font-weight:900;letter-spacing:2px}
+.logo span{color:var(--blue)}
+.home{padding:35px 5%}
+.welcome{padding:35px 0}
+.welcome h1{font-size:clamp(32px,5vw,56px);margin:0 0 12px}
+.muted{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:30px}
+.card{min-height:180px;border-radius:18px;padding:24px;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;transition:.15s}
+.card:focus,.country:focus,.channel:focus,.back:focus{outline:3px solid white;outline-offset:3px}
+.card strong{font-size:24px}
+.card span{font-size:35px}
+.liveCard{background:linear-gradient(135deg,#1769e0,#103a86)}
+.movieCard{background:linear-gradient(135deg,#d94c54,#79232f)}
+.seriesCard{background:linear-gradient(135deg,#7044cc,#34206e)}
+.back{background:#202c43;padding:12px 18px;border-radius:10px}
+.tvLayout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 76px)}
+.sidebar{padding:20px 12px;background:#0d1527;border-right:1px solid #ffffff12}
+.sidebar h3{padding:0 10px;color:var(--muted);font-size:13px;text-transform:uppercase}
+#countries{display:flex;flex-direction:column;gap:6px}
+.country{padding:12px 10px;text-align:left;background:transparent;border-radius:9px;color:#dce5f5}
+.country.selected,.country:hover{background:#1a2c4a;color:white}
+.country small{display:block;margin:5px 0 0 30px;color:var(--muted)}
+.content{padding:22px;min-width:0}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.toolbar h2{margin:0 auto 0 0}
+input{background:#111a2d;color:white;border:1px solid #2b3a55;border-radius:10px;padding:13px;min-width:180px}
+#status{color:var(--muted);font-size:14px;margin:12px 0}
+.channels{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+.channel{background:var(--panel);border:1px solid #ffffff12;border-radius:12px;min-height:125px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+.channel:hover,.channel.selected{border-color:var(--blue);background:#172847}
+.channel img{width:54px;height:42px;object-fit:contain}
+.channel .fallback{font-size:30px}
+.channel span{font-size:14px;overflow-wrap:anywhere}
+.playerWrap{margin-top:22px;background:#000;border-radius:12px;overflow:hidden}
+video{display:block;width:100%;max-height:55vh;background:#000}
+.playerNote{padding:12px;color:var(--muted);font-size:13px}
+.empty{color:var(--muted);padding:30px;text-align:center}
+@media(max-width:650px){
+ header{height:64px}.logo{font-size:21px}
+ .cards{grid-template-columns:1fr}.card{min-height:115px}
+ .tvLayout{grid-template-columns:125px minmax(0,1fr)}
+ .sidebar{padding:12px 6px}.country{font-size:12px;padding:10px 5px}
+ .country small{margin-left:0}.content{padding:12px 8px}
+ .channels{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
+ .channel{min-height:105px;padding:8px}
+ input{min-width:0;width:100%}
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>📺 APOCA TV</h1>
-    <p>Votre télévision, votre univers</p>
-  </header>
 
-  <nav class="cards">
-    <button class="category live" onclick="loadChannels()">▶ LIVE TV</button>
-    <button class="category movies" onclick="comingSoon('Films')">🎬 MOVIES</button>
-    <button class="category series" onclick="comingSoon('Séries')">📺 SERIES</button>
-  </nav>
+<section id="homePage" class="page active">
+<header><div class="logo">APOCA <span>TV</span></div><div class="muted">Votre télévision</div></header>
+<main class="home">
+<div class="welcome"><p class="muted">BIENVENUE SUR</p><h1>Votre univers TV.</h1><p class="muted">Les chaînes et vos divertissements au même endroit.</p></div>
+<div class="cards">
+<button class="card liveCard" onclick="openLive()"><span>▶</span><strong>LIVE TV</strong><div>Regarder les chaînes en direct</div></button>
+<button class="card movieCard" onclick="comingSoon('Films')"><span>🎬</span><strong>FILMS</strong><div>Votre espace cinéma</div></button>
+<button class="card seriesCard" onclick="comingSoon('Séries')"><span>▣</span><strong>SÉRIES</strong><div>Vos séries préférées</div></button>
+</div>
+</main>
+</section>
 
-  <div id="status">Appuie sur LIVE TV pour charger les chaînes.</div>
+<section id="livePage" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="back" onclick="goHome()">← Accueil</button></header>
+<div class="tvLayout">
+<aside class="sidebar"><h3>Choisir un pays</h3><div id="countries"><div class="empty">Chargement...</div></div></aside>
+<main class="content">
+<div class="toolbar"><h2 id="countryTitle">Chaînes TV</h2><input id="search" type="search" placeholder="Rechercher une chaîne..." aria-label="Rechercher une chaîne"></div>
+<div id="status">Chargement de la playlist…</div>
+<div id="channels" class="channels"></div>
+<div class="playerWrap"><video id="video" controls playsinline></video><div class="playerNote" id="playerNote">Sélectionnez une chaîne pour commencer.</div></div>
+</main>
+</div>
+</section>
 
-  <main class="player-wrap">
-    <video id="player" controls playsinline></video>
-    <div id="nowPlaying">Aucune chaîne sélectionnée</div>
-  </main>
+<section id="otherPage" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="back" onclick="goHome()">← Accueil</button></header>
+<div class="home"><h1 id="otherTitle"></h1><p class="muted">Cette rubrique sera disponible lorsqu’un catalogue de contenus sera configuré.</p></div>
+</section>
 
-  <section class="tools">
-    <input id="search" type="search" placeholder="🔎 Rechercher une chaîne..."
-      oninput="renderChannels()">
-    <select id="country" onchange="renderChannels()">
-      <option value="">Tous les pays</option>
-    </select>
-  </section>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js"></script>
+<script>
+const PLAYLIST_URL="https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8";
+const FALLBACK_COUNTRY="🌍";
+let allChannels=[],selectedCountry="ALL",hls=null;
 
-  <section id="channels">
-    <p class="empty">Les chaînes apparaîtront ici.</p>
-  </section>
-
-  <script>
-    const PLAYLIST_URL =
-      "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8";
-
-    let allChannels = [];
-    let hlsPlayer = null;
-
-    function comingSoon(section) {
-      document.getElementById("status").textContent =
-        section + " : cette rubrique sera ajoutée ultérieurement.";
-    }
-
-    function getAttribute(line, key) {
-      const match = line.match(new RegExp(key + '="([^"]*)"'));
-      return match ? match[1] : "";
-    }
-
-    async function loadChannels() {
-      const status = document.getElementById("status");
-      status.textContent = "Chargement de la liste Free-TV...";
-      try {
-        const response = await fetch(PLAYLIST_URL);
-        if (!response.ok) throw new Error("HTTP " + response.status);
-
-        const content = await response.text();
-        allChannels = parseM3U(content);
-
-        if (!allChannels.length) {
-          throw new Error("Aucune chaîne reconnue dans la playlist.");
-        }
-
-        fillCountries();
-        renderChannels();
-        status.textContent = allChannels.length +
-          " chaînes chargées. Choisis une chaîne pour la regarder.";
-      } catch (error) {
-        status.textContent =
-          "Impossible de charger la playlist : " + error.message +
-          ". Vérifie le lien et la connexion Internet.";
-      }
-    }
-
-    function parseM3U(content) {
-      const lines = content.split(/\r?\n/);
-      const result = [];
-      let current = null;
-
-      for (const rawLine of lines) {
-        const line = rawLine.trim();
-        if (!line) continue;
-
-        if (line.startsWith("#EXTINF")) {
-          const comma = line.lastIndexOf(",");
-          const name = comma >= 0 ? line.slice(comma + 1).trim() : "Chaîne TV";
-          current = {
-            name: name || "Chaîne TV",
-            logo: getAttribute(line, "tvg-logo"),
-            country: getAttribute(line, "tvg-country"),
-            group: getAttribute(line, "group-title"),
-            url: ""
-          };
-        } else if (line.startsWith("#EXT-X-STREAM-INF")) {
-          // Ce type de ligne appartient souvent à une playlist HLS
-          // et ne contient pas forcément les métadonnées d'une chaîne.
-          continue;
-        } else if (!line.startsWith("#") && current) {
-          current.url = line;
-          result.push(current);
-          current = null;
-        } else if (!line.startsWith("#") && /^https?:\/\//i.test(line)) {
-          result.push({
-            name: "Chaîne " + (result.length + 1),
-            logo: "", country: "", group: "", url: line
-          });
-        }
-      }
-      return result;
-    }
-
-    function fillCountries() {
-      const select = document.getElementById("country");
-      const previous = select.value;
-      const countries = [...new Set(
-        allChannels.map(c => c.country).filter(Boolean)
-      )].sort();
-
-      select.innerHTML = '<option value="">Tous les pays</option>';
-      for (const country of countries) {
-        const option = document.createElement("option");
-        option.value = country;
-        option.textContent = country;
-        select.appendChild(option);
-      }
-      if (countries.includes(previous)) select.value = previous;
-    }
-
-    function renderChannels() {
-      const container = document.getElementById("channels");
-      const search = document.getElementById("search").value.toLowerCase().trim();
-      const country = document.getElementById("country").value;
-
-      const filtered = allChannels.filter(channel =>
-        channel.name.toLowerCase().includes(search) &&
-        (!country || channel.country === country)
-      );
-
-      container.innerHTML = "";
-      if (!filtered.length) {
-        container.innerHTML = '<p class="empty">Aucune chaîne trouvée.</p>';
-        return;
-      }
-
-      const fragment = document.createDocumentFragment();
-      for (const channel of filtered) {
-        const button = document.createElement("button");
-        button.className = "channel";
-        button.title = "Lire " + channel.name;
-
-        if (channel.logo) {
-          const img = document.createElement("img");
-          img.className = "logo";
-          img.src = channel.logo;
-          img.alt = "";
-          img.onerror = () => img.remove();
-          button.appendChild(img);
-        }
-
-        const label = document.createElement("span");
-        label.className = "channel-name";
-        label.textContent = channel.name;
-        button.appendChild(label);
-        button.onclick = () => playChannel(channel);
-        fragment.appendChild(button);
-      }
-      container.appendChild(fragment);
-    }
-
-    function playChannel(channel) {
-      const video = document.getElementById("player");
-      document.getElementById("nowPlaying").textContent =
-        "▶ " + channel.name;
-      document.getElementById("status").textContent =
-        "Tentative de lecture : " + channel.name;
-
-      if (hlsPlayer) {
-        hlsPlayer.destroy();
-        hlsPlayer = null;
-      }
-      video.pause();
-      video.removeAttribute("src");
-      video.load();
-
-      if (window.Hls && Hls.isSupported()) {
-        hlsPlayer = new Hls();
-        hlsPlayer.loadSource(channel.url);
-        hlsPlayer.attachMedia(video);
-        hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch(() => {
-            document.getElementById("status").textContent =
-              "Appuie sur Lecture dans le lecteur.";
-          });
-        });
-        hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-            document.getElementById("status").textContent =
-              "Cette chaîne ne fonctionne pas actuellement.";
-          }
-        });
-      } else {
-        video.src = channel.url;
-        video.play().catch(() => {
-          document.getElementById("status").textContent =
-            "Format non pris en charge ou chaîne indisponible.";
-        });
-      }
-    }
-  </script>
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+function openLive(){
+ showPage("livePage");
+ if(!allChannels.length) loadPlaylist();
+}
+function goHome(){
+ stopVideo();
+ showPage("homePage");
+}
+function comingSoon(name){
+ document.getElementById("otherTitle").textContent=name;
+ showPage("otherPage");
+}
+function stopVideo(){
+ const video=document.getElementById("video");
+ if(hls){hls.destroy();hls=null}
+ video.pause();video.removeAttribute("src");video.load();
+}
+function getAttr(line,key){
+ const re=new RegExp("(?:^|\\\\s)"+key+"=\\"([^\\"]*)\\"","i");
+ return (line.match(re)||[])[1]||"";
+}
+function parsePlaylist(text){
+ const lines=text.split(/\\r?\\n/);
+ const result=[];let meta=null;
+ for(const raw of lines){
+  const line=raw.trim();
+  if(line.startsWith("#EXTINF:")){
+   const comma=line.lastIndexOf(",");
+   meta={name:comma>=0?line.slice(comma+1).trim():"Chaîne",logo:getAttr(line,"tvg-logo"),country:getAttr(line,"tvg-country"),group:getAttr(line,"group-title")};
+  }else if(line && !line.startsWith("#") && /^https?:\\/\\//i.test(line)){
+   if(meta) result.push({...meta,url:line});
+   meta=null;
+  }
+ }
+ return result;
+}
+function countryInfo(ch){
+ const raw=(ch.country||"").split(",")[0].trim();
+ if(raw) return raw;
+ const group=(ch.group||"").trim();
+ if(group && !/general|entertainment|news|sports|music|movies|series/i.test(group)) return group;
+ return "Autres";
+}
+function flag(country){
+ const flags={"Congo":"🇨🇬","Republic of the Congo":"🇨🇬","Democratic Republic of the Congo":"🇨🇩","France":"🇫🇷","United States":"🇺🇸","United Kingdom":"🇬🇧","Canada":"🇨🇦","Belgium":"🇧🇪","Switzerland":"🇨🇭","Germany":"🇩🇪","Italy":"🇮🇹","Spain":"🇪🇸","Portugal":"🇵🇹","India":"🇮🇳","Brazil":"🇧🇷","South Africa":"🇿🇦","Nigeria":"🇳🇬","Kenya":"🇰🇪","Japan":"🇯🇵","China":"🇨🇳","Australia":"🇦🇺","International":"🌍","Autres":"🌍"};
+ return flags[country]||"🌍";
+}
+function renderCountries(){
+ const counts={};
+ allChannels.forEach(ch=>{const c=countryInfo(ch);counts[c]=(counts[c]||0)+1});
+ const countries=Object.keys(counts).sort((a,b)=>a.localeCompare(b));
+ const el=document.getElementById("countries");el.innerHTML="";
+ const items=[{name:"ALL",count:allChannels.length},...countries.map(name=>({name,count:counts[name]}))];
+ items.forEach(item=>{
+  const btn=document.createElement("button");
+  btn.className="country"+(selectedCountry===item.name?" selected":"");
+  btn.innerHTML=`${item.name==="ALL"?"🌐":flag(item.name)} ${item.name==="ALL"?"Tous les pays":escapeHtml(item.name)}<small>${item.count} chaîne(s)</small>`;
+  btn.onclick=()=>{selectedCountry=item.name;renderCountries();renderChannels()};
+  el.appendChild(btn);
+ });
+}
+function escapeHtml(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function renderChannels(){
+ const query=document.getElementById("search").value.toLowerCase().trim();
+ const list=allChannels.filter(ch=>(selectedCountry==="ALL"||countryInfo(ch)===selectedCountry)&&ch.name.toLowerCase().includes(query));
+ document.getElementById("countryTitle").textContent=selectedCountry==="ALL"?"Toutes les chaînes":selectedCountry;
+ document.getElementById("status").textContent=list.length+" chaîne(s) trouvée(s)";
+ const el=document.getElementById("channels");el.innerHTML="";
+ if(!list.length){el.innerHTML='<div class="empty">Aucune chaîne trouvée pour ce pays.</div>';return}
+ list.forEach(ch=>{
+  const btn=document.createElement("button");btn.className="channel";
+  const name=escapeHtml(ch.name);
+  btn.innerHTML=`${ch.logo?`<img loading="lazy" src="${escapeHtml(ch.logo)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`:""}<div class="fallback" ${ch.logo?'style="display:none"':""}>📺</div><span>${name}</span>`;
+  btn.onclick=()=>playChannel(ch);
+  el.appendChild(btn);
+ });
+}
+function playChannel(ch){
+ const video=document.getElementById("video");
+ document.getElementById("playerNote").textContent="Lecture : "+ch.name;
+ stopVideo();
+ if(window.Hls&&Hls.isSupported()){
+  hls=new Hls();
+  hls.loadSource(ch.url);hls.attachMedia(video);
+  hls.on(Hls.Events.ERROR,(_,data)=>{
+   if(data.fatal) document.getElementById("playerNote").textContent="Cette chaîne ne fonctionne pas actuellement ou son flux est inaccessible.";
+  });
+ }else if(video.canPlayType("application/vnd.apple.mpegurl")){
+  video.src=ch.url;
+ }else{
+  document.getElementById("playerNote").textContent="Ce format vidéo n'est pas pris en charge par cet appareil.";
+  return;
+ }
+ video.play().catch(()=>{document.getElementById("playerNote").textContent="Appuyez sur Lecture. Si rien ne démarre, cette chaîne peut être indisponible.";});
+}
+async function loadPlaylist(){
+ document.getElementById("status").textContent="Chargement des chaînes...";
+ try{
+  const response=await fetch(PLAYLIST_URL);
+  if(!response.ok) throw new Error("HTTP "+response.status);
+  const text=await response.text();
+  allChannels=parsePlaylist(text);
+  if(!allChannels.length) throw new Error("Aucune chaîne trouvée");
+  renderCountries();renderChannels();
+ }catch(e){
+  document.getElementById("status").textContent="Impossible de charger la playlist. Vérifiez Internet ou l'accès à la source.";
+  document.getElementById("channels").innerHTML='<div class="empty">La playlist ne répond pas. Essayez plus tard ou utilisez une source compatible.</div>';
+  document.getElementById("countries").innerHTML='<div class="empty">Pays indisponibles</div>';
+ }
+}
+document.getElementById("search").addEventListener("input",renderChannels);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")goHome()});
+</script>
 </body>
 </html>
+
