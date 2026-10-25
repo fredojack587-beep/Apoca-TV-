@@ -1,0 +1,9 @@
+
+{
+  "appId": "com.apocatv.app",
+  "appName": "Apoca TV",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
