@@ -6,67 +6,282 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080d1b">
   <title>Apoca TV</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 30px 18px;
-      min-height: 100vh;
-      background: #080d1b;
-      color: white;
+      margin: 0; padding: 20px;
+      background: #080d1b; color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
     }
-    h1 { font-size: 42px; margin-top: 35px; }
-    p { color: #b9c4d9; }
+    header { text-align: center; padding: 15px 0; }
+    h1 { font-size: 36px; margin: 8px; }
+    header p { color: #b9c4d9; }
     .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      max-width: 900px;
-      margin: 45px auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; max-width: 900px; margin: 25px auto;
     }
-    button {
-      min-height: 150px;
-      border: 1px solid #ffffff30;
-      border-radius: 18px;
-      color: white;
-      font-size: 21px;
-      font-weight: bold;
-      cursor: pointer;
+    button, input, select {
+      font: inherit; border-radius: 12px;
+    }
+    .category {
+      min-height: 75px; border: 1px solid #ffffff30;
+      color: white; font-weight: bold; cursor: pointer;
     }
     .live { background: #1769e0; }
     .movies { background: #d94c54; }
     .series { background: #7044cc; }
-    #message { margin-top: 20px; }
+    #status { text-align: center; color: #b9c4d9; margin: 18px 0; }
+    .player-wrap { max-width: 950px; margin: auto; }
+    video {
+      width: 100%; max-height: 520px; background: black;
+      border-radius: 14px; aspect-ratio: 16 / 9;
+    }
+    #nowPlaying { margin: 12px 0; font-weight: bold; }
+    .tools {
+      max-width: 950px; margin: 22px auto;
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    input, select {
+      background: #172238; color: white; border: 1px solid #ffffff30;
+      padding: 14px; min-width: 0;
+    }
+    input { flex: 1; }
+    select { width: 100%; }
+    #channels {
+      max-width: 950px; margin: 15px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+    }
+    .channel {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px; min-height: 68px; text-align: left;
+      background: #172238; color: white;
+      border: 1px solid #ffffff20; cursor: pointer;
+    }
+    .channel:focus, .channel:hover { border-color: #3d91ff; background: #203455; }
+    .logo {
+      width: 42px; height: 42px; object-fit: contain;
+      background: #0b1325; border-radius: 8px; flex-shrink: 0;
+    }
+    .channel-name { font-size: 14px; overflow-wrap: anywhere; }
+    .empty { color: #b9c4d9; text-align: center; grid-column: 1 / -1; }
     @media (max-width: 600px) {
+      body { padding: 12px; }
+      h1 { font-size: 29px; }
       .cards { grid-template-columns: 1fr; }
-      button { min-height: 90px; }
+      .category { min-height: 58px; }
+      #channels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
 <body>
-  <h1>📺 APOCA TV</h1>
-  <p>Votre télévision, votre univers</p>
+  <header>
+    <h1>📺 APOCA TV</h1>
+    <p>Votre télévision, votre univers</p>
+  </header>
 
-  <div class="cards">
-    <button class="live" onclick="showMessage('LIVE TV')">
-      ▶ LIVE TV
-    </button>
-    <button class="movies" onclick="showMessage('MOVIES')">
-      🎬 MOVIES
-    </button>
-    <button class="series" onclick="showMessage('SERIES')">
-      📺 SERIES
-    </button>
-  </div>
+  <nav class="cards">
+    <button class="category live" onclick="loadChannels()">▶ LIVE TV</button>
+    <button class="category movies" onclick="comingSoon('Films')">🎬 MOVIES</button>
+    <button class="category series" onclick="comingSoon('Séries')">📺 SERIES</button>
+  </nav>
 
-  <div id="message">Choisissez une rubrique.</div>
+  <div id="status">Appuie sur LIVE TV pour charger les chaînes.</div>
+
+  <main class="player-wrap">
+    <video id="player" controls playsinline></video>
+    <div id="nowPlaying">Aucune chaîne sélectionnée</div>
+  </main>
+
+  <section class="tools">
+    <input id="search" type="search" placeholder="🔎 Rechercher une chaîne..."
+      oninput="renderChannels()">
+    <select id="country" onchange="renderChannels()">
+      <option value="">Tous les pays</option>
+    </select>
+  </section>
+
+  <section id="channels">
+    <p class="empty">Les chaînes apparaîtront ici.</p>
+  </section>
 
   <script>
-    function showMessage(section) {
-      document.getElementById("message").textContent =
-        section + " : les contenus seront ajoutés ici.";
+    const PLAYLIST_URL =
+      "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8";
+
+    let allChannels = [];
+    let hlsPlayer = null;
+
+    function comingSoon(section) {
+      document.getElementById("status").textContent =
+        section + " : cette rubrique sera ajoutée ultérieurement.";
+    }
+
+    function getAttribute(line, key) {
+      const match = line.match(new RegExp(key + '="([^"]*)"'));
+      return match ? match[1] : "";
+    }
+
+    async function loadChannels() {
+      const status = document.getElementById("status");
+      status.textContent = "Chargement de la liste Free-TV...";
+      try {
+        const response = await fetch(PLAYLIST_URL);
+        if (!response.ok) throw new Error("HTTP " + response.status);
+
+        const content = await response.text();
+        allChannels = parseM3U(content);
+
+        if (!allChannels.length) {
+          throw new Error("Aucune chaîne reconnue dans la playlist.");
+        }
+
+        fillCountries();
+        renderChannels();
+        status.textContent = allChannels.length +
+          " chaînes chargées. Choisis une chaîne pour la regarder.";
+      } catch (error) {
+        status.textContent =
+          "Impossible de charger la playlist : " + error.message +
+          ". Vérifie le lien et la connexion Internet.";
+      }
+    }
+
+    function parseM3U(content) {
+      const lines = content.split(/\r?\n/);
+      const result = [];
+      let current = null;
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+
+        if (line.startsWith("#EXTINF")) {
+          const comma = line.lastIndexOf(",");
+          const name = comma >= 0 ? line.slice(comma + 1).trim() : "Chaîne TV";
+          current = {
+            name: name || "Chaîne TV",
+            logo: getAttribute(line, "tvg-logo"),
+            country: getAttribute(line, "tvg-country"),
+            group: getAttribute(line, "group-title"),
+            url: ""
+          };
+        } else if (line.startsWith("#EXT-X-STREAM-INF")) {
+          // Ce type de ligne appartient souvent à une playlist HLS
+          // et ne contient pas forcément les métadonnées d'une chaîne.
+          continue;
+        } else if (!line.startsWith("#") && current) {
+          current.url = line;
+          result.push(current);
+          current = null;
+        } else if (!line.startsWith("#") && /^https?:\/\//i.test(line)) {
+          result.push({
+            name: "Chaîne " + (result.length + 1),
+            logo: "", country: "", group: "", url: line
+          });
+        }
+      }
+      return result;
+    }
+
+    function fillCountries() {
+      const select = document.getElementById("country");
+      const previous = select.value;
+      const countries = [...new Set(
+        allChannels.map(c => c.country).filter(Boolean)
+      )].sort();
+
+      select.innerHTML = '<option value="">Tous les pays</option>';
+      for (const country of countries) {
+        const option = document.createElement("option");
+        option.value = country;
+        option.textContent = country;
+        select.appendChild(option);
+      }
+      if (countries.includes(previous)) select.value = previous;
+    }
+
+    function renderChannels() {
+      const container = document.getElementById("channels");
+      const search = document.getElementById("search").value.toLowerCase().trim();
+      const country = document.getElementById("country").value;
+
+      const filtered = allChannels.filter(channel =>
+        channel.name.toLowerCase().includes(search) &&
+        (!country || channel.country === country)
+      );
+
+      container.innerHTML = "";
+      if (!filtered.length) {
+        container.innerHTML = '<p class="empty">Aucune chaîne trouvée.</p>';
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      for (const channel of filtered) {
+        const button = document.createElement("button");
+        button.className = "channel";
+        button.title = "Lire " + channel.name;
+
+        if (channel.logo) {
+          const img = document.createElement("img");
+          img.className = "logo";
+          img.src = channel.logo;
+          img.alt = "";
+          img.onerror = () => img.remove();
+          button.appendChild(img);
+        }
+
+        const label = document.createElement("span");
+        label.className = "channel-name";
+        label.textContent = channel.name;
+        button.appendChild(label);
+        button.onclick = () => playChannel(channel);
+        fragment.appendChild(button);
+      }
+      container.appendChild(fragment);
+    }
+
+    function playChannel(channel) {
+      const video = document.getElementById("player");
+      document.getElementById("nowPlaying").textContent =
+        "▶ " + channel.name;
+      document.getElementById("status").textContent =
+        "Tentative de lecture : " + channel.name;
+
+      if (hlsPlayer) {
+        hlsPlayer.destroy();
+        hlsPlayer = null;
+      }
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+
+      if (window.Hls && Hls.isSupported()) {
+        hlsPlayer = new Hls();
+        hlsPlayer.loadSource(channel.url);
+        hlsPlayer.attachMedia(video);
+        hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play().catch(() => {
+            document.getElementById("status").textContent =
+              "Appuie sur Lecture dans le lecteur.";
+          });
+        });
+        hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            document.getElementById("status").textContent =
+              "Cette chaîne ne fonctionne pas actuellement.";
+          }
+        });
+      } else {
+        video.src = channel.url;
+        video.play().catch(() => {
+          document.getElementById("status").textContent =
+            "Format non pris en charge ou chaîne indisponible.";
+        });
+      }
     }
   </script>
 </body>
