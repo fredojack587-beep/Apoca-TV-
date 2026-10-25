@@ -1,0 +1,10 @@
+
+{
+  "name": "apoca-tv",
+  "version": "1.0.0",
+  "description": "Application Android TV Apoca TV",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo Apoca TV"
+  }
+}
