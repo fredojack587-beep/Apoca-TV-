@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d1b">
+  <title>Apoca TV</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 30px 18px;
+      min-height: 100vh;
+      background: #080d1b;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 { font-size: 42px; margin-top: 35px; }
+    p { color: #b9c4d9; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      max-width: 900px;
+      margin: 45px auto;
+    }
+    button {
+      min-height: 150px;
+      border: 1px solid #ffffff30;
+      border-radius: 18px;
+      color: white;
+      font-size: 21px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .live { background: #1769e0; }
+    .movies { background: #d94c54; }
+    .series { background: #7044cc; }
+    #message { margin-top: 20px; }
+    @media (max-width: 600px) {
+      .cards { grid-template-columns: 1fr; }
+      button { min-height: 90px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>📺 APOCA TV</h1>
+  <p>Votre télévision, votre univers</p>
+
+  <div class="cards">
+    <button class="live" onclick="showMessage('LIVE TV')">
+      ▶ LIVE TV
+    </button>
+    <button class="movies" onclick="showMessage('MOVIES')">
+      🎬 MOVIES
+    </button>
+    <button class="series" onclick="showMessage('SERIES')">
+      📺 SERIES
+    </button>
+  </div>
+
+  <div id="message">Choisissez une rubrique.</div>
+
+  <script>
+    function showMessage(section) {
+      document.getElementById("message").textContent =
+        section + " : les contenus seront ajoutés ici.";
+    }
+  </script>
+</body>
+</html>
