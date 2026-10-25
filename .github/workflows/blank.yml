@@ -1,0 +1,80 @@
+
+name: Build Apoca TV APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Show project files
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Files in repository:"
+          ls -la
+          echo "Searching for index.html:"
+          find . -type f -name index.html
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Prepare web files
+        run: |
+          set -e
+          mkdir -p www
+          HTML_FILE="$(find . -type f -name index.html \
+            -not -path './www/*' \
+            -not -path './node_modules/*' \
+            -not -path './android/*' \
+            | head -n 1)"
+
+          if [ -z "$HTML_FILE" ]; then
+            echo "ERROR: index.html not found in the repository."
+            exit 1
+          fi
+
+          echo "Using HTML file: $HTML_FILE"
+          cp "$HTML_FILE" www/index.html
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: Sync Android project
+        run: npx cap sync android
+
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Apoca-TV-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          
