@@ -3,224 +3,288 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080d1b">
 <title>Apoca TV</title>
 <style>
 :root{--bg:#080d1b;--panel:#111a2d;--blue:#2878ff;--text:#fff;--muted:#9baac4}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-button,input{font:inherit}
+button,input,select{font:inherit}
 button{cursor:pointer;color:white;border:0}
 .page{display:none;min-height:100vh}
 .page.active{display:block}
-header{height:76px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:#0d1527;border-bottom:1px solid #ffffff12}
-.logo{font-size:26px;font-weight:900;letter-spacing:2px}
+header{height:70px;padding:0 4%;display:flex;align-items:center;justify-content:space-between;background:#0d1527;border-bottom:1px solid #26334a}
+.logo{font-size:25px;font-weight:900;letter-spacing:2px}
 .logo span{color:var(--blue)}
-.home{padding:35px 5%}
-.welcome{padding:35px 0}
-.welcome h1{font-size:clamp(32px,5vw,56px);margin:0 0 12px}
-.muted{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:30px}
-.card{min-height:180px;border-radius:18px;padding:24px;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;transition:.15s}
-.card:focus,.country:focus,.channel:focus,.back:focus{outline:3px solid white;outline-offset:3px}
-.card strong{font-size:24px}
-.card span{font-size:35px}
-.liveCard{background:linear-gradient(135deg,#1769e0,#103a86)}
-.movieCard{background:linear-gradient(135deg,#d94c54,#79232f)}
-.seriesCard{background:linear-gradient(135deg,#7044cc,#34206e)}
-.back{background:#202c43;padding:12px 18px;border-radius:10px}
-.tvLayout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 76px)}
-.sidebar{padding:20px 12px;background:#0d1527;border-right:1px solid #ffffff12}
-.sidebar h3{padding:0 10px;color:var(--muted);font-size:13px;text-transform:uppercase}
-#countries{display:flex;flex-direction:column;gap:6px}
-.country{padding:12px 10px;text-align:left;background:transparent;border-radius:9px;color:#dce5f5}
-.country.selected,.country:hover{background:#1a2c4a;color:white}
-.country small{display:block;margin:5px 0 0 30px;color:var(--muted)}
-.content{padding:22px;min-width:0}
-.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
-.toolbar h2{margin:0 auto 0 0}
-input{background:#111a2d;color:white;border:1px solid #2b3a55;border-radius:10px;padding:13px;min-width:180px}
-#status{color:var(--muted);font-size:14px;margin:12px 0}
-.channels{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
-.channel{background:var(--panel);border:1px solid #ffffff12;border-radius:12px;min-height:125px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
-.channel:hover,.channel.selected{border-color:var(--blue);background:#172847}
-.channel img{width:54px;height:42px;object-fit:contain}
-.channel .fallback{font-size:30px}
-.channel span{font-size:14px;overflow-wrap:anywhere}
-.playerWrap{margin-top:22px;background:#000;border-radius:12px;overflow:hidden}
-video{display:block;width:100%;max-height:55vh;background:#000}
-.playerNote{padding:12px;color:var(--muted);font-size:13px}
-.empty{color:var(--muted);padding:30px;text-align:center}
+main{padding:28px 4%}
+h1{font-size:clamp(28px,4vw,46px)}
+h2{font-size:22px}
+.muted{color:var(--muted);line-height:1.6}
+.btn{background:var(--blue);padding:13px 18px;border-radius:9px;font-weight:bold}
+.btn2{background:#202c43;padding:12px 16px;border-radius:9px}
+input,select{width:100%;padding:13px;background:#080d1b;color:white;border:1px solid #34435d;border-radius:9px;margin:6px 0 14px}
+label{font-size:14px;color:#c8d5eb}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.card{padding:23px;min-height:150px;text-align:left;border-radius:15px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
+.card strong{font-size:22px}.card .emoji{font-size:34px}
+.live{background:linear-gradient(135deg,#2878ff,#10336f)}
+.movies{background:linear-gradient(135deg,#d94c54,#79232f)}
+.series{background:linear-gradient(135deg,#7044cc,#34206e)}
+.panel{background:var(--panel);padding:22px;border:1px solid #26334a;border-radius:14px;margin:16px 0}
+.loginGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.loginChoice{background:#162541;padding:20px;border-radius:12px;text-align:left;border:1px solid #293c5b}
+.loginChoice strong{display:block;font-size:18px;margin-bottom:8px}
+.tvLayout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 70px)}
+.sidebar{padding:18px 12px;background:#0d1527;border-right:1px solid #26334a}
+.content{padding:20px;min-width:0}
+.country{width:100%;text-align:left;background:transparent;padding:12px;border-radius:8px;margin-bottom:4px}
+.country.selected,.country:focus{background:#1a2c4a;outline:2px solid #2878ff}
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.toolbar h2{margin-right:auto}
+.toolbar input{max-width:330px}
+.channels{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:12px}
+.channel{background:var(--panel);border:1px solid #26334a;border-radius:11px;min-height:115px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+.channel:focus{outline:3px solid var(--blue)}
+.channel img{width:48px;height:40px;object-fit:contain}
+.channel span{font-size:13px;overflow-wrap:anywhere}
+#video{width:100%;max-height:50vh;background:#000;margin-top:18px;border-radius:10px}
+.status{color:var(--muted);font-size:14px;line-height:1.6}
+.hidden{display:none!important}
+.deviceCode{font-size:22px;font-weight:bold;letter-spacing:2px;overflow-wrap:anywhere;color:#75a8ff}
+:focus-visible{outline:3px solid white;outline-offset:3px}
 @media(max-width:650px){
- header{height:64px}.logo{font-size:21px}
- .cards{grid-template-columns:1fr}.card{min-height:115px}
- .tvLayout{grid-template-columns:125px minmax(0,1fr)}
- .sidebar{padding:12px 6px}.country{font-size:12px;padding:10px 5px}
- .country small{margin-left:0}.content{padding:12px 8px}
- .channels{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
- .channel{min-height:105px;padding:8px}
- input{min-width:0;width:100%}
+ .cards{grid-template-columns:1fr}.card{min-height:110px}
+ .tvLayout{grid-template-columns:115px minmax(0,1fr)}
+ .sidebar{padding:10px 5px}.country{font-size:12px;padding:9px 4px}
+ .content{padding:10px 7px}.channels{grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:7px}
+ .channel{padding:7px}.loginGrid{grid-template-columns:1fr}
+ header{height:62px}.logo{font-size:20px}
 }
 </style>
 </head>
 <body>
 
-<section id="homePage" class="page active">
-<header><div class="logo">APOCA <span>TV</span></div><div class="muted">Votre télévision</div></header>
-<main class="home">
-<div class="welcome"><p class="muted">BIENVENUE SUR</p><h1>Votre univers TV.</h1><p class="muted">Les chaînes et vos divertissements au même endroit.</p></div>
+<section id="home" class="page active">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">Connexion</button></header>
+<main>
+<p class="muted">BIENVENUE SUR APOCA TV</p>
+<h1>Votre divertissement.<br><span style="color:#4388ff">À votre façon.</span></h1>
+<p class="muted">Télévision en direct, films et séries dans une interface conçue pour votre téléviseur.</p>
 <div class="cards">
-<button class="card liveCard" onclick="openLive()"><span>▶</span><strong>LIVE TV</strong><div>Regarder les chaînes en direct</div></button>
-<button class="card movieCard" onclick="comingSoon('Films')"><span>🎬</span><strong>FILMS</strong><div>Votre espace cinéma</div></button>
-<button class="card seriesCard" onclick="comingSoon('Séries')"><span>▣</span><strong>SÉRIES</strong><div>Vos séries préférées</div></button>
+<button class="card live" onclick="show('profiles')"><span class="emoji">▶</span><strong>LIVE TV</strong><span>Regarder les chaînes</span></button>
+<button class="card movies" onclick="coming('Films')"><span class="emoji">🎬</span><strong>FILMS</strong><span>Votre espace cinéma</span></button>
+<button class="card series" onclick="coming('Séries')"><span class="emoji">▣</span><strong>SÉRIES</strong><span>Vos séries préférées</span></button>
+</div>
+<div class="panel">
+<h2>Mon compte</h2>
+<p class="muted">Ajoutez votre abonnement IPTV ou demandez l'activation de votre appareil.</p>
+<button class="btn" onclick="show('profiles')">Configurer mon accès</button>
+<button class="btn2" onclick="show('activation')">Activation par code</button>
 </div>
 </main>
 </section>
 
-<section id="livePage" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="back" onclick="goHome()">← Accueil</button></header>
+<section id="profiles" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('home')">← Accueil</button></header>
+<main>
+<h1>Configurer votre accès</h1>
+<p class="muted">Utilisez votre propre abonnement ou une playlist qui vous a été attribuée.</p>
+<div class="loginGrid">
+<button class="loginChoice" onclick="show('m3u')"><strong>📋 M3U / M3U8</strong><span class="muted">Ajouter une URL de playlist</span></button>
+<button class="loginChoice" onclick="show('xtream')"><strong>📺 Xtream Codes</strong><span class="muted">Serveur, utilisateur et mot de passe</span></button>
+<button class="loginChoice" onclick="show('activation')"><strong>🔑 Activation</strong><span class="muted">Afficher le code de cet appareil</span></button>
+</div>
+<p class="status">Les identifiants sont utilisés sur cet appareil. N'utilisez que des abonnements que vous êtes autorisé à consulter.</p>
+</main>
+</section>
+
+<section id="m3u" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">← Retour</button></header>
+<main>
+<div class="panel">
+<h1>Ajouter une playlist</h1>
+<label for="playlistUrl">URL M3U ou M3U8</label>
+<input id="playlistUrl" type="url" placeholder="https://exemple.com/playlist.m3u" autocomplete="url">
+<label for="playlistName">Nom de la playlist (facultatif)</label>
+<input id="playlistName" placeholder="Mon abonnement">
+<button class="btn" onclick="addM3U()">Charger la playlist</button>
+<p id="m3uStatus" class="status"></p>
+</div>
+</main>
+</section>
+
+<section id="xtream" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">← Retour</button></header>
+<main>
+<div class="panel">
+<h1>Connexion Xtream Codes</h1>
+<label for="server">URL du serveur</label>
+<input id="server" type="url" placeholder="https://serveur.exemple.com">
+<label for="username">Nom d'utilisateur</label>
+<input id="username" autocomplete="username" placeholder="Votre identifiant">
+<label for="password">Mot de passe</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Votre mot de passe">
+<button class="btn" onclick="addXtream()">Se connecter</button>
+<p id="xtreamStatus" class="status"></p>
+<p class="status">La connexion utilise l'interface M3U du fournisseur. Certains serveurs bloquent les requêtes provenant d'applications web : un serveur intermédiaire pourra alors être nécessaire.</p>
+</div>
+</main>
+</section>
+
+<section id="activation" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">← Retour</button></header>
+<main>
+<div class="panel">
+<h1>Activation de l'appareil</h1>
+<p class="muted">Communiquez cet identifiant à l'administrateur Apoca TV pour demander l'activation.</p>
+<p>Identifiant de cet appareil :</p>
+<div id="deviceId" class="deviceCode"></div>
+<p>Code de demande :</p>
+<div id="activationCode" class="deviceCode"></div>
+<p class="status">Démo : aucun serveur n'est encore connecté. Cet écran ne confirme pas une activation et ne déverrouille pas les chaînes. Nous connecterons le système administrateur lors de l'étape suivante.</p>
+<button class="btn2" onclick="copyDevice()">Copier les identifiants</button>
+<p id="copyStatus" class="status"></p>
+</div>
+</main>
+</section>
+
+<section id="live" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('home');stopVideo()">← Accueil</button></header>
 <div class="tvLayout">
-<aside class="sidebar"><h3>Choisir un pays</h3><div id="countries"><div class="empty">Chargement...</div></div></aside>
+<aside class="sidebar"><h3>Par pays</h3><div id="countries"></div></aside>
 <main class="content">
-<div class="toolbar"><h2 id="countryTitle">Chaînes TV</h2><input id="search" type="search" placeholder="Rechercher une chaîne..." aria-label="Rechercher une chaîne"></div>
-<div id="status">Chargement de la playlist…</div>
+<div class="toolbar"><h2 id="countryTitle">Toutes les chaînes</h2><input id="search" type="search" placeholder="Rechercher..." aria-label="Rechercher une chaîne"></div>
+<p id="liveStatus" class="status"></p>
 <div id="channels" class="channels"></div>
-<div class="playerWrap"><video id="video" controls playsinline></video><div class="playerNote" id="playerNote">Sélectionnez une chaîne pour commencer.</div></div>
+<video id="video" controls playsinline></video>
+<p id="playerNote" class="status">Sélectionnez une chaîne.</p>
 </main>
 </div>
 </section>
 
-<section id="otherPage" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="back" onclick="goHome()">← Accueil</button></header>
-<div class="home"><h1 id="otherTitle"></h1><p class="muted">Cette rubrique sera disponible lorsqu’un catalogue de contenus sera configuré.</p></div>
+<section id="other" class="page">
+<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('home')">← Accueil</button></header>
+<main><h1 id="otherTitle"></h1><p class="muted">Cette rubrique sera activée lorsque le catalogue de contenus sera configuré.</p></main>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js"></script>
 <script>
-const PLAYLIST_URL="https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8";
-const FALLBACK_COUNTRY="🌍";
 let allChannels=[],selectedCountry="ALL",hls=null;
+const $=id=>document.getElementById(id);
 
-function showPage(id){
+function show(id){
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+ $(id).classList.add("active");
 }
-function openLive(){
- showPage("livePage");
- if(!allChannels.length) loadPlaylist();
+function coming(name){$("otherTitle").textContent=name;show("other")}
+function deviceIdentity(){
+ let id=localStorage.getItem("apoca_device_id");
+ if(!id){id="APOCA-"+Array.from(crypto.getRandomValues(new Uint8Array(6))).map(n=>n.toString(16).padStart(2,"0")).join("").toUpperCase();localStorage.setItem("apoca_device_id",id)}
+ $("deviceId").textContent=id;
+ $("activationCode").textContent=id.slice(-6);
 }
-function goHome(){
- stopVideo();
- showPage("homePage");
+function copyDevice(){
+ const txt="Identifiant : "+$("deviceId").textContent+"\nCode : "+$("activationCode").textContent;
+ if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>$("copyStatus").textContent="Identifiants copiés.").catch(()=>$("copyStatus").textContent=txt)}
+ else $("copyStatus").textContent=txt;
 }
-function comingSoon(name){
- document.getElementById("otherTitle").textContent=name;
- showPage("otherPage");
-}
-function stopVideo(){
- const video=document.getElementById("video");
- if(hls){hls.destroy();hls=null}
- video.pause();video.removeAttribute("src");video.load();
-}
-function getAttr(line,key){
- const re=new RegExp("(?:^|\\\\s)"+key+"=\\"([^\\"]*)\\"","i");
+function attr(line,key){
+ const re=new RegExp("(?:^|\\s)"+key+"=\"([^\"]*)\"","i");
  return (line.match(re)||[])[1]||"";
 }
 function parsePlaylist(text){
- const lines=text.split(/\\r?\\n/);
- const result=[];let meta=null;
+ const lines=text.split(/\r?\n/),out=[];let meta=null;
  for(const raw of lines){
   const line=raw.trim();
   if(line.startsWith("#EXTINF:")){
    const comma=line.lastIndexOf(",");
-   meta={name:comma>=0?line.slice(comma+1).trim():"Chaîne",logo:getAttr(line,"tvg-logo"),country:getAttr(line,"tvg-country"),group:getAttr(line,"group-title")};
-  }else if(line && !line.startsWith("#") && /^https?:\\/\\//i.test(line)){
-   if(meta) result.push({...meta,url:line});
+   meta={name:comma>=0?line.slice(comma+1).trim():"Chaîne",logo:attr(line,"tvg-logo"),country:attr(line,"tvg-country"),group:attr(line,"group-title")};
+  }else if(line&&!line.startsWith("#")&&/^https?:\/\//i.test(line)){
+   if(meta)out.push({...meta,url:line});
    meta=null;
   }
  }
- return result;
+ return out;
 }
-function countryInfo(ch){
- const raw=(ch.country||"").split(",")[0].trim();
- if(raw) return raw;
- const group=(ch.group||"").trim();
- if(group && !/general|entertainment|news|sports|music|movies|series/i.test(group)) return group;
- return "Autres";
+function countryOf(ch){
+ if(ch.country)return ch.country.split(",")[0].trim();
+ return ch.group||"Autres";
 }
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function flag(country){
- const flags={"Congo":"🇨🇬","Republic of the Congo":"🇨🇬","Democratic Republic of the Congo":"🇨🇩","France":"🇫🇷","United States":"🇺🇸","United Kingdom":"🇬🇧","Canada":"🇨🇦","Belgium":"🇧🇪","Switzerland":"🇨🇭","Germany":"🇩🇪","Italy":"🇮🇹","Spain":"🇪🇸","Portugal":"🇵🇹","India":"🇮🇳","Brazil":"🇧🇷","South Africa":"🇿🇦","Nigeria":"🇳🇬","Kenya":"🇰🇪","Japan":"🇯🇵","China":"🇨🇳","Australia":"🇦🇺","International":"🌍","Autres":"🌍"};
+ const flags={"Congo":"🇨🇬","Republic of the Congo":"🇨🇬","Democratic Republic of the Congo":"🇨🇩","France":"🇫🇷","United States":"🇺🇸","United Kingdom":"🇬🇧","Canada":"🇨🇦","Belgium":"🇧🇪","Germany":"🇩🇪","Italy":"🇮🇹","Spain":"🇪🇸","Portugal":"🇵🇹","India":"🇮🇳","Brazil":"🇧🇷","South Africa":"🇿🇦","Nigeria":"🇳🇬","Kenya":"🇰🇪"};
  return flags[country]||"🌍";
 }
 function renderCountries(){
  const counts={};
- allChannels.forEach(ch=>{const c=countryInfo(ch);counts[c]=(counts[c]||0)+1});
- const countries=Object.keys(counts).sort((a,b)=>a.localeCompare(b));
- const el=document.getElementById("countries");el.innerHTML="";
- const items=[{name:"ALL",count:allChannels.length},...countries.map(name=>({name,count:counts[name]}))];
- items.forEach(item=>{
-  const btn=document.createElement("button");
-  btn.className="country"+(selectedCountry===item.name?" selected":"");
-  btn.innerHTML=`${item.name==="ALL"?"🌐":flag(item.name)} ${item.name==="ALL"?"Tous les pays":escapeHtml(item.name)}<small>${item.count} chaîne(s)</small>`;
-  btn.onclick=()=>{selectedCountry=item.name;renderCountries();renderChannels()};
-  el.appendChild(btn);
+ allChannels.forEach(ch=>{let c=countryOf(ch);counts[c]=(counts[c]||0)+1});
+ const el=$("countries");el.innerHTML="";
+ [{name:"ALL",count:allChannels.length},...Object.keys(counts).sort().map(name=>({name,count:counts[name]}))].forEach(item=>{
+  const b=document.createElement("button");
+  b.className="country"+(selectedCountry===item.name?" selected":"");
+  b.textContent=(item.name==="ALL"?"🌐 Tous les pays":flag(item.name)+" "+item.name)+" ("+item.count+")";
+  b.onclick=()=>{selectedCountry=item.name;renderCountries();renderChannels()};
+  el.appendChild(b);
  });
-}
-function escapeHtml(s){
- return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 function renderChannels(){
- const query=document.getElementById("search").value.toLowerCase().trim();
- const list=allChannels.filter(ch=>(selectedCountry==="ALL"||countryInfo(ch)===selectedCountry)&&ch.name.toLowerCase().includes(query));
- document.getElementById("countryTitle").textContent=selectedCountry==="ALL"?"Toutes les chaînes":selectedCountry;
- document.getElementById("status").textContent=list.length+" chaîne(s) trouvée(s)";
- const el=document.getElementById("channels");el.innerHTML="";
- if(!list.length){el.innerHTML='<div class="empty">Aucune chaîne trouvée pour ce pays.</div>';return}
+ const q=$("search").value.toLowerCase().trim();
+ const list=allChannels.filter(ch=>(selectedCountry==="ALL"||countryOf(ch)===selectedCountry)&&ch.name.toLowerCase().includes(q));
+ $("countryTitle").textContent=selectedCountry==="ALL"?"Toutes les chaînes":selectedCountry;
+ $("liveStatus").textContent=list.length+" chaîne(s)";
+ const el=$("channels");el.innerHTML="";
+ if(!list.length){el.textContent="Aucune chaîne trouvée.";return}
  list.forEach(ch=>{
-  const btn=document.createElement("button");btn.className="channel";
-  const name=escapeHtml(ch.name);
-  btn.innerHTML=`${ch.logo?`<img loading="lazy" src="${escapeHtml(ch.logo)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">`:""}<div class="fallback" ${ch.logo?'style="display:none"':""}>📺</div><span>${name}</span>`;
-  btn.onclick=()=>playChannel(ch);
-  el.appendChild(btn);
+  const b=document.createElement("button");b.className="channel";
+  if(ch.logo){
+   const img=document.createElement("img");img.src=ch.logo;img.alt="";img.onerror=()=>img.remove();b.appendChild(img);
+  }
+  const span=document.createElement("span");span.textContent=ch.name;b.appendChild(span);
+  b.onclick=()=>playChannel(ch);el.appendChild(b);
  });
 }
-function playChannel(ch){
- const video=document.getElementById("video");
- document.getElementById("playerNote").textContent="Lecture : "+ch.name;
- stopVideo();
- if(window.Hls&&Hls.isSupported()){
-  hls=new Hls();
-  hls.loadSource(ch.url);hls.attachMedia(video);
-  hls.on(Hls.Events.ERROR,(_,data)=>{
-   if(data.fatal) document.getElementById("playerNote").textContent="Cette chaîne ne fonctionne pas actuellement ou son flux est inaccessible.";
-  });
- }else if(video.canPlayType("application/vnd.apple.mpegurl")){
-  video.src=ch.url;
- }else{
-  document.getElementById("playerNote").textContent="Ce format vidéo n'est pas pris en charge par cet appareil.";
-  return;
- }
- video.play().catch(()=>{document.getElementById("playerNote").textContent="Appuyez sur Lecture. Si rien ne démarre, cette chaîne peut être indisponible.";});
-}
-async function loadPlaylist(){
- document.getElementById("status").textContent="Chargement des chaînes...";
+async function addM3U(){
+ const url=$("playlistUrl").value.trim();
+ if(!/^https?:\/\//i.test(url)){ $("m3uStatus").textContent="Saisissez une URL M3U valide.";return}
+ $("m3uStatus").textContent="Chargement de la playlist...";
  try{
-  const response=await fetch(PLAYLIST_URL);
-  if(!response.ok) throw new Error("HTTP "+response.status);
-  const text=await response.text();
-  allChannels=parsePlaylist(text);
-  if(!allChannels.length) throw new Error("Aucune chaîne trouvée");
-  renderCountries();renderChannels();
+  const res=await fetch(url);
+  if(!res.ok)throw Error("HTTP "+res.status);
+  const text=await res.text(),channels=parsePlaylist(text);
+  if(!channels.length)throw Error("Aucune chaîne reconnue dans cette playlist.");
+  allChannels=channels;selectedCountry="ALL";renderCountries();renderChannels();show("live");
  }catch(e){
-  document.getElementById("status").textContent="Impossible de charger la playlist. Vérifiez Internet ou l'accès à la source.";
-  document.getElementById("channels").innerHTML='<div class="empty">La playlist ne répond pas. Essayez plus tard ou utilisez une source compatible.</div>';
-  document.getElementById("countries").innerHTML='<div class="empty">Pays indisponibles</div>';
+  $("m3uStatus").textContent="Impossible de charger la playlist. Le serveur peut bloquer l'accès depuis l'application. Vérifiez l'URL ou utilisez un serveur autorisé compatible.";
  }
 }
-document.getElementById("search").addEventListener("input",renderChannels);
-document.addEventListener("keydown",e=>{if(e.key==="Escape")goHome()});
+function addXtream(){
+ const server=$("server").value.trim().replace(/\/+$/,"");
+ const user=$("username").value.trim(),pass=$("password").value.trim();
+ if(!/^https?:\/\//i.test(server)||!user||!pass){$("xtreamStatus").textContent="Renseignez le serveur, le nom d'utilisateur et le mot de passe.";return}
+ const url=server+"/get.php?username="+encodeURIComponent(user)+"&password="+encodeURIComponent(pass)+"&type=m3u_plus&output=ts";
+ $("playlistUrl").value=url;
+ show("m3u");
+ $("m3uStatus").textContent="Identifiants préparés. Appuyez sur Charger la playlist.";
+}
+function stopVideo(){
+ const v=$("video");if(hls){hls.destroy();hls=null}
+ v.pause();v.removeAttribute("src");v.load();
+}
+function playChannel(ch){
+ stopVideo();
+ const v=$("video");$("playerNote").textContent="Lecture : "+ch.name;
+ if(window.Hls&&Hls.isSupported()){
+  hls=new Hls();hls.loadSource(ch.url);hls.attachMedia(v);
+  hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)$("playerNote").textContent="Flux inaccessible ou chaîne indisponible."});
+ }else if(v.canPlayType("application/vnd.apple.mpegurl"))v.src=ch.url;
+ else{$("playerNote").textContent="Format non pris en charge sur cet appareil.";return}
+ v.play().catch(()=>$("playerNote").textContent="Appuyez sur Lecture. La chaîne peut aussi être indisponible.");
+}
+$("search").addEventListener("input",renderChannels);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){stopVideo();show("home")}});
+deviceIdentity();
 </script>
 </body>
-</html>
-
+ </html>
+ 
