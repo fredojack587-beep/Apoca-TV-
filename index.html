@@ -3,288 +3,456 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080d1b">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
 <title>Apoca TV</title>
+
 <style>
-:root{--bg:#080d1b;--panel:#111a2d;--blue:#2878ff;--text:#fff;--muted:#9baac4}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-button,input,select{font:inherit}
-button{cursor:pointer;color:white;border:0}
-.page{display:none;min-height:100vh}
-.page.active{display:block}
-header{height:70px;padding:0 4%;display:flex;align-items:center;justify-content:space-between;background:#0d1527;border-bottom:1px solid #26334a}
-.logo{font-size:25px;font-weight:900;letter-spacing:2px}
-.logo span{color:var(--blue)}
-main{padding:28px 4%}
-h1{font-size:clamp(28px,4vw,46px)}
-h2{font-size:22px}
-.muted{color:var(--muted);line-height:1.6}
-.btn{background:var(--blue);padding:13px 18px;border-radius:9px;font-weight:bold}
-.btn2{background:#202c43;padding:12px 16px;border-radius:9px}
-input,select{width:100%;padding:13px;background:#080d1b;color:white;border:1px solid #34435d;border-radius:9px;margin:6px 0 14px}
-label{font-size:14px;color:#c8d5eb}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
-.card{padding:23px;min-height:150px;text-align:left;border-radius:15px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
-.card strong{font-size:22px}.card .emoji{font-size:34px}
-.live{background:linear-gradient(135deg,#2878ff,#10336f)}
-.movies{background:linear-gradient(135deg,#d94c54,#79232f)}
-.series{background:linear-gradient(135deg,#7044cc,#34206e)}
-.panel{background:var(--panel);padding:22px;border:1px solid #26334a;border-radius:14px;margin:16px 0}
-.loginGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.loginChoice{background:#162541;padding:20px;border-radius:12px;text-align:left;border:1px solid #293c5b}
-.loginChoice strong{display:block;font-size:18px;margin-bottom:8px}
-.tvLayout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 70px)}
-.sidebar{padding:18px 12px;background:#0d1527;border-right:1px solid #26334a}
-.content{padding:20px;min-width:0}
-.country{width:100%;text-align:left;background:transparent;padding:12px;border-radius:8px;margin-bottom:4px}
-.country.selected,.country:focus{background:#1a2c4a;outline:2px solid #2878ff}
-.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.toolbar h2{margin-right:auto}
-.toolbar input{max-width:330px}
-.channels{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:12px}
-.channel{background:var(--panel);border:1px solid #26334a;border-radius:11px;min-height:115px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
-.channel:focus{outline:3px solid var(--blue)}
-.channel img{width:48px;height:40px;object-fit:contain}
-.channel span{font-size:13px;overflow-wrap:anywhere}
-#video{width:100%;max-height:50vh;background:#000;margin-top:18px;border-radius:10px}
-.status{color:var(--muted);font-size:14px;line-height:1.6}
-.hidden{display:none!important}
-.deviceCode{font-size:22px;font-weight:bold;letter-spacing:2px;overflow-wrap:anywhere;color:#75a8ff}
-:focus-visible{outline:3px solid white;outline-offset:3px}
-@media(max-width:650px){
- .cards{grid-template-columns:1fr}.card{min-height:110px}
- .tvLayout{grid-template-columns:115px minmax(0,1fr)}
- .sidebar{padding:10px 5px}.country{font-size:12px;padding:9px 4px}
- .content{padding:10px 7px}.channels{grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:7px}
- .channel{padding:7px}.loginGrid{grid-template-columns:1fr}
- header{height:62px}.logo{font-size:20px}
+:root {
+  --bg: #080d18;
+  --panel: #111a2b;
+  --blue: #168cff;
+  --cyan: #00d9ff;
+  --text: #f4f7ff;
+  --muted: #91a1bb;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: #0c1423;
+  border-bottom: 1px solid #24334a;
+}
+.logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-size: 27px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, var(--blue), var(--cyan));
+}
+header h1 { margin: 0; font-size: 25px; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+main { padding: 20px; max-width: 1500px; margin: auto; }
+.setup {
+  background: var(--panel);
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+.setup h2 { margin: 0 0 12px; font-size: 17px; }
+input, textarea, select, button {
+  font: inherit;
+  border-radius: 8px;
+  padding: 12px;
+}
+input, textarea, select {
+  color: white;
+  background: #080f1d;
+  border: 1px solid #30405b;
+  min-width: 0;
+}
+#playlistUrl { width: 100%; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+button {
+  border: 0;
+  cursor: pointer;
+  color: white;
+  background: var(--blue);
+  font-weight: bold;
+}
+button:focus, input:focus, select:focus {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+.secondary { background: #263650; }
+#status { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.player-panel, .channels-panel {
+  background: var(--panel);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.player-heading { padding: 14px 16px; }
+.player-heading h2 { margin: 0; font-size: 18px; }
+.player-heading p { color: var(--muted); margin: 6px 0 0; }
+video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  object-fit: contain;
+}
+.player-controls { padding: 12px 16px; }
+.player-controls button { margin: 3px; }
+.channels-header { padding: 14px; }
+.channels-header h2 { margin: 0 0 12px; font-size: 18px; }
+.channels-header input, .channels-header select { width: 100%; margin-top: 8px; }
+#channelList {
+  max-height: 58vh;
+  overflow-y: auto;
+  padding: 0 10px 10px;
+}
+.country-title {
+  color: var(--cyan);
+  font-size: 13px;
+  padding: 12px 8px 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.channel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+.channel:hover, .channel:focus {
+  background: #20314b;
+  outline: 2px solid var(--blue);
+}
+.channel img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  border-radius: 7px;
+  background: #080d18;
+}
+.channel-name { font-size: 14px; font-weight: bold; }
+.channel-group { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.empty { color: var(--muted); padding: 18px 8px; }
+footer { color: var(--muted); font-size: 12px; padding: 20px; text-align: center; }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  #channelList { max-height: 45vh; }
+  main { padding: 12px; }
 }
 </style>
 </head>
+
 <body>
+<header>
+  <div class="logo">A</div>
+  <div>
+    <h1>Apoca TV</h1>
+    <p>Votre télévision, partout avec vous</p>
+  </div>
+</header>
 
-<section id="home" class="page active">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">Connexion</button></header>
 <main>
-<p class="muted">BIENVENUE SUR APOCA TV</p>
-<h1>Votre divertissement.<br><span style="color:#4388ff">À votre façon.</span></h1>
-<p class="muted">Télévision en direct, films et séries dans une interface conçue pour votre téléviseur.</p>
-<div class="cards">
-<button class="card live" onclick="show('profiles')"><span class="emoji">▶</span><strong>LIVE TV</strong><span>Regarder les chaînes</span></button>
-<button class="card movies" onclick="coming('Films')"><span class="emoji">🎬</span><strong>FILMS</strong><span>Votre espace cinéma</span></button>
-<button class="card series" onclick="coming('Séries')"><span class="emoji">▣</span><strong>SÉRIES</strong><span>Vos séries préférées</span></button>
-</div>
-<div class="panel">
-<h2>Mon compte</h2>
-<p class="muted">Ajoutez votre abonnement IPTV ou demandez l'activation de votre appareil.</p>
-<button class="btn" onclick="show('profiles')">Configurer mon accès</button>
-<button class="btn2" onclick="show('activation')">Activation par code</button>
-</div>
+  <section class="setup">
+    <h2>Configurer votre playlist IPTV</h2>
+    <input id="playlistUrl" type="url"
+      placeholder="Collez ici votre lien M3U / Xtream">
+    <div class="actions">
+      <button id="loadButton">Charger les chaînes</button>
+      <button id="forgetButton" class="secondary">Effacer le lien enregistré</button>
+    </div>
+    <p id="status" role="status">Entrez votre lien M3U pour commencer.</p>
+  </section>
+
+  <section class="layout">
+    <div class="player-panel">
+      <div class="player-heading">
+        <h2 id="playingTitle">Bienvenue sur Apoca TV</h2>
+        <p id="playingSubtitle">Sélectionnez une chaîne dans la liste.</p>
+      </div>
+      <video id="player" controls autoplay playsinline></video>
+      <div class="player-controls">
+        <button id="fullscreenButton">Plein écran</button>
+        <button id="stopButton" class="secondary">Arrêter</button>
+      </div>
+    </div>
+
+    <div class="channels-panel">
+      <div class="channels-header">
+        <h2>Chaînes en direct</h2>
+        <input id="search" type="search" placeholder="Rechercher une chaîne...">
+        <select id="countryFilter">
+          <option value="">Tous les pays et groupes</option>
+        </select>
+      </div>
+      <div id="channelList">
+        <p class="empty">Chargez une playlist pour afficher les chaînes.</p>
+      </div>
+    </div>
+  </section>
 </main>
-</section>
 
-<section id="profiles" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('home')">← Accueil</button></header>
-<main>
-<h1>Configurer votre accès</h1>
-<p class="muted">Utilisez votre propre abonnement ou une playlist qui vous a été attribuée.</p>
-<div class="loginGrid">
-<button class="loginChoice" onclick="show('m3u')"><strong>📋 M3U / M3U8</strong><span class="muted">Ajouter une URL de playlist</span></button>
-<button class="loginChoice" onclick="show('xtream')"><strong>📺 Xtream Codes</strong><span class="muted">Serveur, utilisateur et mot de passe</span></button>
-<button class="loginChoice" onclick="show('activation')"><strong>🔑 Activation</strong><span class="muted">Afficher le code de cet appareil</span></button>
-</div>
-<p class="status">Les identifiants sont utilisés sur cet appareil. N'utilisez que des abonnements que vous êtes autorisé à consulter.</p>
-</main>
-</section>
+<footer>Apoca TV · Utilisez uniquement des playlists que vous êtes autorisé à regarder.</footer>
 
-<section id="m3u" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">← Retour</button></header>
-<main>
-<div class="panel">
-<h1>Ajouter une playlist</h1>
-<label for="playlistUrl">URL M3U ou M3U8</label>
-<input id="playlistUrl" type="url" placeholder="https://exemple.com/playlist.m3u" autocomplete="url">
-<label for="playlistName">Nom de la playlist (facultatif)</label>
-<input id="playlistName" placeholder="Mon abonnement">
-<button class="btn" onclick="addM3U()">Charger la playlist</button>
-<p id="m3uStatus" class="status"></p>
-</div>
-</main>
-</section>
-
-<section id="xtream" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">← Retour</button></header>
-<main>
-<div class="panel">
-<h1>Connexion Xtream Codes</h1>
-<label for="server">URL du serveur</label>
-<input id="server" type="url" placeholder="https://serveur.exemple.com">
-<label for="username">Nom d'utilisateur</label>
-<input id="username" autocomplete="username" placeholder="Votre identifiant">
-<label for="password">Mot de passe</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="Votre mot de passe">
-<button class="btn" onclick="addXtream()">Se connecter</button>
-<p id="xtreamStatus" class="status"></p>
-<p class="status">La connexion utilise l'interface M3U du fournisseur. Certains serveurs bloquent les requêtes provenant d'applications web : un serveur intermédiaire pourra alors être nécessaire.</p>
-</div>
-</main>
-</section>
-
-<section id="activation" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('profiles')">← Retour</button></header>
-<main>
-<div class="panel">
-<h1>Activation de l'appareil</h1>
-<p class="muted">Communiquez cet identifiant à l'administrateur Apoca TV pour demander l'activation.</p>
-<p>Identifiant de cet appareil :</p>
-<div id="deviceId" class="deviceCode"></div>
-<p>Code de demande :</p>
-<div id="activationCode" class="deviceCode"></div>
-<p class="status">Démo : aucun serveur n'est encore connecté. Cet écran ne confirme pas une activation et ne déverrouille pas les chaînes. Nous connecterons le système administrateur lors de l'étape suivante.</p>
-<button class="btn2" onclick="copyDevice()">Copier les identifiants</button>
-<p id="copyStatus" class="status"></p>
-</div>
-</main>
-</section>
-
-<section id="live" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('home');stopVideo()">← Accueil</button></header>
-<div class="tvLayout">
-<aside class="sidebar"><h3>Par pays</h3><div id="countries"></div></aside>
-<main class="content">
-<div class="toolbar"><h2 id="countryTitle">Toutes les chaînes</h2><input id="search" type="search" placeholder="Rechercher..." aria-label="Rechercher une chaîne"></div>
-<p id="liveStatus" class="status"></p>
-<div id="channels" class="channels"></div>
-<video id="video" controls playsinline></video>
-<p id="playerNote" class="status">Sélectionnez une chaîne.</p>
-</main>
-</div>
-</section>
-
-<section id="other" class="page">
-<header><div class="logo">APOCA <span>TV</span></div><button class="btn2" onclick="show('home')">← Accueil</button></header>
-<main><h1 id="otherTitle"></h1><p class="muted">Cette rubrique sera activée lorsque le catalogue de contenus sera configuré.</p></main>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script>
-let allChannels=[],selectedCountry="ALL",hls=null;
-const $=id=>document.getElementById(id);
+const urlInput = document.getElementById("playlistUrl");
+const statusText = document.getElementById("status");
+const channelList = document.getElementById("channelList");
+const countryFilter = document.getElementById("countryFilter");
+const searchInput = document.getElementById("search");
+const video = document.getElementById("player");
 
-function show(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- $(id).classList.add("active");
+let channels = [];
+let hls = null;
+
+urlInput.value = localStorage.getItem("apoca_playlist_url") || "";
+
+function showStatus(message) {
+  statusText.textContent = message;
 }
-function coming(name){$("otherTitle").textContent=name;show("other")}
-function deviceIdentity(){
- let id=localStorage.getItem("apoca_device_id");
- if(!id){id="APOCA-"+Array.from(crypto.getRandomValues(new Uint8Array(6))).map(n=>n.toString(16).padStart(2,"0")).join("").toUpperCase();localStorage.setItem("apoca_device_id",id)}
- $("deviceId").textContent=id;
- $("activationCode").textContent=id.slice(-6);
+
+function getAttribute(line, name) {
+  const match = line.match(new RegExp(name + '="([^"]*)"', "i"));
+  return match ? match[1] : "";
 }
-function copyDevice(){
- const txt="Identifiant : "+$("deviceId").textContent+"\nCode : "+$("activationCode").textContent;
- if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>$("copyStatus").textContent="Identifiants copiés.").catch(()=>$("copyStatus").textContent=txt)}
- else $("copyStatus").textContent=txt;
-}
-function attr(line,key){
- const re=new RegExp("(?:^|\\s)"+key+"=\"([^\"]*)\"","i");
- return (line.match(re)||[])[1]||"";
-}
-function parsePlaylist(text){
- const lines=text.split(/\r?\n/),out=[];let meta=null;
- for(const raw of lines){
-  const line=raw.trim();
-  if(line.startsWith("#EXTINF:")){
-   const comma=line.lastIndexOf(",");
-   meta={name:comma>=0?line.slice(comma+1).trim():"Chaîne",logo:attr(line,"tvg-logo"),country:attr(line,"tvg-country"),group:attr(line,"group-title")};
-  }else if(line&&!line.startsWith("#")&&/^https?:\/\//i.test(line)){
-   if(meta)out.push({...meta,url:line});
-   meta=null;
+
+function detectCountry(name, group) {
+  const text = (group + " " + name).toLowerCase();
+  const countries = [
+    ["Congo-Brazzaville", ["congo brazzaville", "congo-brazzaville", "rca tv", "tele congo"]],
+    ["RDC", ["rdc", "congo kinshasa", "congo-kinshasa", "rtga", "rtv congo"]],
+    ["Cameroun", ["cameroun", "cameroon"]],
+    ["Côte d'Ivoire", ["côte d'ivoire", "cote d'ivoire", "ivoir"]],
+    ["Sénégal", ["sénégal", "senegal"]],
+    ["Gabon", ["gabon"]],
+    ["Nigeria", ["nigeria", "nigerian"]],
+    ["Ghana", ["ghana"]],
+    ["Afrique du Sud", ["south africa", "afrique du sud"]],
+    ["France", ["france", "french"]],
+    ["Belgique", ["belgium", "belgique"]],
+    ["Royaume-Uni", ["united kingdom", "uk tv", "british"]],
+    ["États-Unis", ["usa", "united states", "american"]],
+    ["Canada", ["canada"]],
+    ["Maroc", ["maroc", "morocco"]],
+    ["Algérie", ["algérie", "algerie", "algeria"]],
+    ["Tunisie", ["tunisie", "tunisia"]]
+  ];
+
+  for (const [country, terms] of countries) {
+    if (terms.some(term => text.includes(term))) return country;
   }
- }
- return out;
+
+  if (group && group.trim()) return group.trim();
+  return "Autres chaînes";
 }
-function countryOf(ch){
- if(ch.country)return ch.country.split(",")[0].trim();
- return ch.group||"Autres";
-}
-function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function flag(country){
- const flags={"Congo":"🇨🇬","Republic of the Congo":"🇨🇬","Democratic Republic of the Congo":"🇨🇩","France":"🇫🇷","United States":"🇺🇸","United Kingdom":"🇬🇧","Canada":"🇨🇦","Belgium":"🇧🇪","Germany":"🇩🇪","Italy":"🇮🇹","Spain":"🇪🇸","Portugal":"🇵🇹","India":"🇮🇳","Brazil":"🇧🇷","South Africa":"🇿🇦","Nigeria":"🇳🇬","Kenya":"🇰🇪"};
- return flags[country]||"🌍";
-}
-function renderCountries(){
- const counts={};
- allChannels.forEach(ch=>{let c=countryOf(ch);counts[c]=(counts[c]||0)+1});
- const el=$("countries");el.innerHTML="";
- [{name:"ALL",count:allChannels.length},...Object.keys(counts).sort().map(name=>({name,count:counts[name]}))].forEach(item=>{
-  const b=document.createElement("button");
-  b.className="country"+(selectedCountry===item.name?" selected":"");
-  b.textContent=(item.name==="ALL"?"🌐 Tous les pays":flag(item.name)+" "+item.name)+" ("+item.count+")";
-  b.onclick=()=>{selectedCountry=item.name;renderCountries();renderChannels()};
-  el.appendChild(b);
- });
-}
-function renderChannels(){
- const q=$("search").value.toLowerCase().trim();
- const list=allChannels.filter(ch=>(selectedCountry==="ALL"||countryOf(ch)===selectedCountry)&&ch.name.toLowerCase().includes(q));
- $("countryTitle").textContent=selectedCountry==="ALL"?"Toutes les chaînes":selectedCountry;
- $("liveStatus").textContent=list.length+" chaîne(s)";
- const el=$("channels");el.innerHTML="";
- if(!list.length){el.textContent="Aucune chaîne trouvée.";return}
- list.forEach(ch=>{
-  const b=document.createElement("button");b.className="channel";
-  if(ch.logo){
-   const img=document.createElement("img");img.src=ch.logo;img.alt="";img.onerror=()=>img.remove();b.appendChild(img);
+
+function parseM3U(data) {
+  const lines = data.split(/\r?\n/);
+  const result = [];
+  let current = null;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) continue;
+
+    if (line.startsWith("#EXTINF")) {
+      const comma = line.lastIndexOf(",");
+      const name = comma >= 0 ? line.slice(comma + 1).trim() : "Chaîne sans nom";
+      const group = getAttribute(line, "group-title");
+      current = {
+        name: name || "Chaîne sans nom",
+        group: group,
+        logo: getAttribute(line, "tvg-logo"),
+        country: detectCountry(name, group),
+        url: ""
+      };
+    } else if (!line.startsWith("#") && current) {
+      current.url = line;
+      result.push(current);
+      current = null;
+    }
   }
-  const span=document.createElement("span");span.textContent=ch.name;b.appendChild(span);
-  b.onclick=()=>playChannel(ch);el.appendChild(b);
- });
+  return result;
 }
-async function addM3U(){
- const url=$("playlistUrl").value.trim();
- if(!/^https?:\/\//i.test(url)){ $("m3uStatus").textContent="Saisissez une URL M3U valide.";return}
- $("m3uStatus").textContent="Chargement de la playlist...";
- try{
-  const res=await fetch(url);
-  if(!res.ok)throw Error("HTTP "+res.status);
-  const text=await res.text(),channels=parsePlaylist(text);
-  if(!channels.length)throw Error("Aucune chaîne reconnue dans cette playlist.");
-  allChannels=channels;selectedCountry="ALL";renderCountries();renderChannels();show("live");
- }catch(e){
-  $("m3uStatus").textContent="Impossible de charger la playlist. Le serveur peut bloquer l'accès depuis l'application. Vérifiez l'URL ou utilisez un serveur autorisé compatible.";
- }
+
+async function loadPlaylist() {
+  const url = urlInput.value.trim();
+  if (!url) {
+    showStatus("Collez d'abord votre lien M3U.");
+    return;
+  }
+
+  localStorage.setItem("apoca_playlist_url", url);
+  showStatus("Chargement de la playlist...");
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const data = await response.text();
+
+    if (!data.includes("#EXTM3U")) {
+      throw new Error("Le lien ne renvoie pas une playlist M3U valide.");
+    }
+
+    channels = parseM3U(data);
+    if (!channels.length) {
+      throw new Error("Aucune chaîne trouvée dans cette playlist.");
+    }
+
+    updateCountryFilter();
+    renderChannels();
+    showStatus(channels.length + " chaînes chargées.");
+  } catch (error) {
+    showStatus("Impossible de charger la playlist. Le serveur peut bloquer l'accès depuis l'application (CORS), ou le lien peut être invalide. Détail : " + error.message);
+  }
 }
-function addXtream(){
- const server=$("server").value.trim().replace(/\/+$/,"");
- const user=$("username").value.trim(),pass=$("password").value.trim();
- if(!/^https?:\/\//i.test(server)||!user||!pass){$("xtreamStatus").textContent="Renseignez le serveur, le nom d'utilisateur et le mot de passe.";return}
- const url=server+"/get.php?username="+encodeURIComponent(user)+"&password="+encodeURIComponent(pass)+"&type=m3u_plus&output=ts";
- $("playlistUrl").value=url;
- show("m3u");
- $("m3uStatus").textContent="Identifiants préparés. Appuyez sur Charger la playlist.";
+
+function updateCountryFilter() {
+  const previous = countryFilter.value;
+  const countries = [...new Set(channels.map(c => c.country))]
+    .sort((a, b) => a.localeCompare(b, "fr"));
+
+  countryFilter.innerHTML = '<option value="">Tous les pays et groupes</option>';
+  countries.forEach(country => {
+    const option = document.createElement("option");
+    option.value = country;
+    option.textContent = country;
+    countryFilter.appendChild(option);
+  });
+  if (countries.includes(previous)) countryFilter.value = previous;
 }
-function stopVideo(){
- const v=$("video");if(hls){hls.destroy();hls=null}
- v.pause();v.removeAttribute("src");v.load();
+
+function renderChannels() {
+  const query = searchInput.value.toLowerCase().trim();
+  const country = countryFilter.value;
+
+  const filtered = channels.filter(c =>
+    (!country || c.country === country) &&
+    (!query || c.name.toLowerCase().includes(query) ||
+      c.country.toLowerCase().includes(query))
+  );
+
+  channelList.replaceChildren();
+
+  if (!filtered.length) {
+    const p = document.createElement("p");
+    p.className = "empty";
+    p.textContent = "Aucune chaîne trouvée.";
+    channelList.appendChild(p);
+    return;
+  }
+
+  const groups = {};
+  filtered.forEach(channel => {
+    if (!groups[channel.country]) groups[channel.country] = [];
+    groups[channel.country].push(channel);
+  });
+
+  Object.keys(groups).sort((a, b) => a.localeCompare(b, "fr")).forEach(countryName => {
+    const heading = document.createElement("div");
+    heading.className = "country-title";
+    heading.textContent = countryName;
+    channelList.appendChild(heading);
+
+    groups[countryName].forEach(channel => {
+      const item = document.createElement("div");
+      item.className = "channel";
+      item.tabIndex = 0;
+
+      const img = document.createElement("img");
+      img.alt = "";
+      img.loading = "lazy";
+      img.src = channel.logo || "";
+      img.onerror = () => { img.style.visibility = "hidden"; };
+
+      const info = document.createElement("div");
+      const name = document.createElement("div");
+      name.className = "channel-name";
+      name.textContent = channel.name;
+
+      const group = document.createElement("div");
+      group.className = "channel-group";
+      group.textContent = channel.group || countryName;
+
+      info.append(name, group);
+      item.append(img, info);
+
+      item.addEventListener("click", () => playChannel(channel));
+      item.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          playChannel(channel);
+        }
+      });
+      channelList.appendChild(item);
+    });
+  });
 }
-function playChannel(ch){
- stopVideo();
- const v=$("video");$("playerNote").textContent="Lecture : "+ch.name;
- if(window.Hls&&Hls.isSupported()){
-  hls=new Hls();hls.loadSource(ch.url);hls.attachMedia(v);
-  hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)$("playerNote").textContent="Flux inaccessible ou chaîne indisponible."});
- }else if(v.canPlayType("application/vnd.apple.mpegurl"))v.src=ch.url;
- else{$("playerNote").textContent="Format non pris en charge sur cet appareil.";return}
- v.play().catch(()=>$("playerNote").textContent="Appuyez sur Lecture. La chaîne peut aussi être indisponible.");
+
+function playChannel(channel) {
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+
+  document.getElementById("playingTitle").textContent = channel.name;
+  document.getElementById("playingSubtitle").textContent =
+    channel.country + (channel.group ? " · " + channel.group : "");
+
+  const streamUrl = channel.url;
+  const isHls = /\.m3u8($|\?)/i.test(streamUrl);
+
+  if (isHls && window.Hls && Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(streamUrl);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.ERROR, (_, data) => {
+      if (data.fatal) showStatus("Lecture impossible pour cette chaîne. Essayez une autre chaîne ou vérifiez le flux.");
+    });
+  } else {
+    video.src = streamUrl;
+    video.load();
+  }
+
+  video.play().catch(() => {
+    showStatus("Appuyez sur Lecture. Certains flux IPTV ne sont pas compatibles avec le navigateur.");
+  });
 }
-$("search").addEventListener("input",renderChannels);
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){stopVideo();show("home")}});
-deviceIdentity();
+
+document.getElementById("loadButton").addEventListener("click", loadPlaylist);
+searchInput.addEventListener("input", renderChannels);
+countryFilter.addEventListener("change", renderChannels);
+
+document.getElementById("stopButton").addEventListener("click", () => {
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+  if (hls) { hls.destroy(); hls = null; }
+});
+
+document.getElementById("fullscreenButton").addEventListener("click", () => {
+  if (video.requestFullscreen) video.requestFullscreen();
+});
+
+document.getElementById("forgetButton").addEventListener("click", () => {
+  localStorage.removeItem("apoca_playlist_url");
+  urlInput.value = "";
+  showStatus("Lien enregistré effacé de cet appareil.");
+});
+
+if (urlInput.value) {
+  showStatus("Lien retrouvé sur cet appareil. Appuyez sur « Charger les chaînes ».");
+}
 </script>
 </body>
- </html>
- 
+</html>
