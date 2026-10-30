@@ -5,12 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d18">
+
 <title>APOCA TV</title>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+}
 
 body{
  background:#080d18;
@@ -19,28 +24,30 @@ body{
 }
 
 header{
- padding:18px 15px;
+ padding:17px 15px;
  background:#101a2c;
  display:flex;
  align-items:center;
  justify-content:space-between;
+ gap:12px;
 }
 
 .logo{
  font-size:24px;
  font-weight:bold;
  color:#e50936;
+ white-space:nowrap;
 }
 
 .logo span{color:white}
 
 .search{
- padding:10px;
+ width:145px;
+ padding:11px;
  background:#19263b;
  border:none;
  border-radius:8px;
  color:white;
- width:130px;
  outline:none;
 }
 
@@ -49,7 +56,7 @@ nav{
  overflow-x:auto;
  white-space:nowrap;
  gap:25px;
- padding:16px;
+ padding:17px 15px;
  background:#101a2c;
  border-top:1px solid #26334a;
  border-bottom:1px solid #26334a;
@@ -57,25 +64,52 @@ nav{
 }
 
 nav::-webkit-scrollbar,
-.categories::-webkit-scrollbar{display:none}
+.categories::-webkit-scrollbar{
+ display:none;
+}
 
 nav button{
  background:none;
  border:none;
  color:#aab5c7;
- font-size:14px;
+ font-size:13px;
  font-weight:bold;
  cursor:pointer;
  flex-shrink:0;
 }
 
-nav button.active{color:#e50936}
+nav button.active{
+ color:#e50936;
+ border-bottom:2px solid #e50936;
+ padding-bottom:7px;
+}
 
-.container{padding:16px}
+.container{
+ padding:16px;
+}
 
 h2{
  font-size:19px;
  margin-bottom:15px;
+}
+
+.player{
+ display:none;
+ background:#000;
+ margin-bottom:22px;
+ border-radius:12px;
+ overflow:hidden;
+}
+
+video{
+ width:100%;
+ max-height:260px;
+ background:black;
+}
+
+.player-title{
+ padding:13px;
+ font-weight:bold;
 }
 
 .categories{
@@ -93,6 +127,7 @@ h2{
  border:1px solid #26334a;
  background:#142137;
  color:white;
+ cursor:pointer;
 }
 
 .categories button.active{
@@ -131,37 +166,25 @@ h2{
  text-overflow:ellipsis;
 }
 
-.player{
+.section{
  display:none;
- background:#000;
- margin-bottom:20px;
- border-radius:10px;
- overflow:hidden;
 }
 
-video{
- width:100%;
- max-height:240px;
- background:#000;
-}
-
-.player-title{
- padding:12px;
- font-weight:bold;
+.section.active{
+ display:block;
 }
 
 .message{
  text-align:center;
- padding:35px 10px;
+ padding:25px 10px;
  color:#aab5c7;
  font-size:14px;
 }
 
-.section{display:none}
-.section.active{display:block}
-
 @media(min-width:700px){
- .grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .grid{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+ }
  video{max-height:450px}
  .channel img{height:120px}
 }
@@ -172,12 +195,18 @@ video{
 
 <header>
  <div class="logo">APOCA <span>TV</span></div>
- <input class="search" id="search"
- placeholder="Rechercher..." oninput="render()">
+ <input
+  class="search"
+  id="search"
+  placeholder="Rechercher..."
+  oninput="render()"
+ >
 </header>
 
+<!-- MENU HORIZONTAL -->
+
 <nav>
- <button class="active" onclick="showSection('home',this)">Accueil</button>
+ <button class="active" onclick="showSection('home',this)">ACCUEIL</button>
  <button onclick="showSection('live',this)">TV EN DIRECT</button>
  <button onclick="showSection('movies',this)">FILMS</button>
  <button onclick="showSection('series',this)">SÉRIES</button>
@@ -186,238 +215,463 @@ video{
 
 <main class="container">
 
+<!-- LECTEUR VIDEO -->
+
 <div class="player" id="player">
  <video id="video" controls autoplay playsinline></video>
  <div class="player-title" id="playerTitle"></div>
 </div>
 
+<!-- ACCUEIL -->
+
 <section class="section active" id="home">
+
  <h2>Bienvenue sur APOCA TV</h2>
- <p style="color:#aab5c7;margin-bottom:20px">
- Retrouvez vos programmes préférés.
+
+ <p style="color:#aab5c7;margin-bottom:22px">
+  Retrouvez vos programmes préférés.
  </p>
- <h2>Nos chaînes</h2>
+
+ <h2>Catégories</h2>
+
  <div class="categories" id="categories"></div>
+
+ <h2>Toutes les chaînes</h2>
+
  <div class="grid" id="channels"></div>
- <div class="message" id="status">Chargement de la playlist...</div>
+
+ <div class="message" id="status">
+  Chargement des chaînes...
+ </div>
+
 </section>
+
+<!-- DIRECT -->
 
 <section class="section" id="live">
+
  <h2>TV EN DIRECT</h2>
+
  <div class="categories" id="categoriesLive"></div>
+
  <div class="grid" id="liveChannels"></div>
+
 </section>
+
+<!-- FILMS -->
 
 <section class="section" id="movies">
+
  <h2>FILMS</h2>
+
  <div class="grid" id="movieChannels"></div>
+
 </section>
+
+<!-- SERIES -->
 
 <section class="section" id="series">
+
  <h2>SÉRIES</h2>
+
  <div class="grid" id="seriesChannels"></div>
+
 </section>
 
+<!-- FAVORIS -->
+
 <section class="section" id="favorites">
+
  <h2>MES FAVORIS</h2>
+
  <div class="grid" id="favoriteChannels"></div>
+
 </section>
 
 </main>
 
 <script>
-const PLAYLIST_URL="./tv_channels_HC22PAH_plus.m3u";
 
-let channels=[];
-let selectedCategory="Tous";
-let favorites=JSON.parse(localStorage.getItem("apoca_favorites")||"[]");
+// LIEN DIRECT DE TA PLAYLIST GITHUB
+
+const PLAYLIST_URL =
+"https://raw.githubusercontent.com/fredojacl/Apoca-TV-/main/tv_channels_HC22PAH_plus.m3u";
+
+let channels = [];
+
+let selectedCategory = "Tous";
+
+let favorites = JSON.parse(
+ localStorage.getItem("apoca_favorites") || "[]"
+);
+
+// NAVIGATION
 
 function showSection(id,button){
- document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+
+ document.querySelectorAll(".section").forEach(section=>{
+  section.classList.remove("active");
+ });
+
  document.getElementById(id).classList.add("active");
 
- document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ document.querySelectorAll("nav button").forEach(btn=>{
+  btn.classList.remove("active");
+ });
+
  button.classList.add("active");
 
- document.getElementById("player").style.display="none";
 }
+
+// LECTURE DU FICHIER M3U
 
 function parseM3U(data){
- const lines=data.split(/\r?\n/);
- let result=[];
- let current=null;
+
+ const lines = data.split(/\r?\n/);
+
+ let result = [];
+
+ let current = null;
 
  for(let line of lines){
-  line=line.trim();
+
+  line = line.trim();
 
   if(line.startsWith("#EXTINF")){
-   const name=line.split(",").slice(1).join(",").trim();
 
-   const group=line.match(/group-title="([^"]*)"/i);
-   const logo=line.match(/tvg-logo="([^"]*)"/i);
+   const name = line.split(",").slice(1).join(",").trim();
 
-   current={
-    name:name||"Chaîne sans nom",
-    category:group?group[1]:"Autres",
-    logo:logo?logo[1]:"",
-    url:""
+   const group = line.match(/group-title="([^"]*)"/i);
+
+   const logo = line.match(/tvg-logo="([^"]*)"/i);
+
+   const tvgName = line.match(/tvg-name="([^"]*)"/i);
+
+   current = {
+
+    name: name || (tvgName ? tvgName[1] : "Chaîne sans nom"),
+
+    category: group ? group[1] : "Autres",
+
+    logo: logo ? logo[1] : "",
+
+    url: ""
+
    };
+
   }
-  else if(line && !line.startsWith("#") && current){
-   current.url=line;
+
+  else if(
+   line &&
+   !line.startsWith("#") &&
+   current
+  ){
+
+   current.url = line;
+
    result.push(current);
-   current=null;
+
+   current = null;
+
   }
+
  }
+
  return result;
+
 }
+
+// DETERMINER LE TYPE DE CONTENU
 
 function getType(channel){
- const c=channel.category.toLowerCase();
- const n=channel.name.toLowerCase();
 
- if(c.includes("movie")||c.includes("film")||n.includes("vod"))
+ const c = channel.category.toLowerCase();
+
+ const n = channel.name.toLowerCase();
+
+ if(
+  c.includes("movie") ||
+  c.includes("film") ||
+  c.includes("vod")
+ ){
   return "movies";
+ }
 
- if(c.includes("series")||c.includes("série"))
+ if(
+  c.includes("series") ||
+  c.includes("série") ||
+  c.includes("serie")
+ ){
   return "series";
+ }
 
  return "live";
+
 }
+
+// CREATION DES CARTES
 
 function makeCard(channel){
- const card=document.createElement("div");
- card.className="channel";
 
- const img=document.createElement("img");
- img.src=channel.logo||"";
- img.alt="";
- img.onerror=function(){
-  this.style.display="none";
+ const card = document.createElement("div");
+
+ card.className = "channel";
+
+ const img = document.createElement("img");
+
+ img.src = channel.logo || "";
+
+ img.alt = channel.name;
+
+ img.onerror = function(){
+
+  this.style.display = "none";
+
  };
 
- const name=document.createElement("p");
- name.textContent=channel.name;
+ const name = document.createElement("p");
+
+ name.textContent = channel.name;
 
  card.appendChild(img);
+
  card.appendChild(name);
 
- card.onclick=()=>playChannel(channel);
+ card.onclick = function(){
+
+  playChannel(channel);
+
+ };
 
  return card;
+
 }
 
+// CATEGORIES HORIZONTALES
+
 function renderCategories(){
- const categories=["Tous",...new Set(channels.map(c=>c.category))];
+
+ const categories = [
+  "Tous",
+  ...new Set(channels.map(c=>c.category))
+ ];
 
  ["categories","categoriesLive"].forEach(id=>{
-  const el=document.getElementById(id);
-  el.innerHTML="";
+
+  const el = document.getElementById(id);
+
+  el.innerHTML = "";
 
   categories.forEach(cat=>{
-   const btn=document.createElement("button");
-   btn.textContent=cat;
-   btn.className=cat===selectedCategory?"active":"";
 
-   btn.onclick=()=>{
-    selectedCategory=cat;
+   const btn = document.createElement("button");
+
+   btn.textContent = cat;
+
+   btn.className =
+    cat === selectedCategory ? "active" : "";
+
+   btn.onclick = function(){
+
+    selectedCategory = cat;
+
     render();
+
     renderCategories();
+
    };
 
    el.appendChild(btn);
+
   });
+
  });
+
 }
 
-function render(){
- const search=document.getElementById("search").value.toLowerCase();
+// AFFICHAGE DES CHAINES
 
- const filtered=channels.filter(c=>{
-  const matchName=c.name.toLowerCase().includes(search);
-  const matchCategory=selectedCategory==="Tous"||c.category===selectedCategory;
-  return matchName&&matchCategory;
+function render(){
+
+ const search =
+  document.getElementById("search").value.toLowerCase();
+
+ const filtered = channels.filter(c=>{
+
+  const matchName =
+   c.name.toLowerCase().includes(search);
+
+  const matchCategory =
+   selectedCategory === "Tous" ||
+   c.category === selectedCategory;
+
+  return matchName && matchCategory;
+
  });
 
- const live=filtered.filter(c=>getType(c)==="live");
- const movies=filtered.filter(c=>getType(c)==="movies");
- const series=filtered.filter(c=>getType(c)==="series");
+ const live = filtered.filter(c=>getType(c)==="live");
+
+ const movies = filtered.filter(c=>getType(c)==="movies");
+
+ const series = filtered.filter(c=>getType(c)==="series");
 
  function fill(id,list){
-  const el=document.getElementById(id);
-  el.innerHTML="";
-  list.forEach(c=>el.appendChild(makeCard(c)));
+
+  const el = document.getElementById(id);
+
+  el.innerHTML = "";
+
+  list.forEach(c=>{
+
+   el.appendChild(makeCard(c));
+
+  });
+
  }
 
  fill("channels",filtered);
+
  fill("liveChannels",live);
+
  fill("movieChannels",movies);
+
  fill("seriesChannels",series);
- fill("favoriteChannels",
+
+ fill(
+  "favoriteChannels",
   channels.filter(c=>favorites.includes(c.url))
  );
+
 }
 
-function playChannel(channel){
- const player=document.getElementById("player");
- const video=document.getElementById("video");
+// LECTEUR VIDEO
 
- player.style.display="block";
- document.getElementById("playerTitle").textContent=channel.name;
+function playChannel(channel){
+
+ const player = document.getElementById("player");
+
+ const video = document.getElementById("video");
+
+ player.style.display = "block";
+
+ document.getElementById("playerTitle").textContent =
+  channel.name;
 
  video.pause();
+
  video.removeAttribute("src");
+
  video.load();
 
  if(window.currentHls){
+
   window.currentHls.destroy();
-  window.currentHls=null;
+
+  window.currentHls = null;
+
  }
 
- if(Hls.isSupported() && channel.url.includes(".m3u8")){
-  const hls=new Hls();
-  window.currentHls=hls;
+ if(
+  window.Hls &&
+  Hls.isSupported() &&
+  channel.url.includes(".m3u8")
+ ){
+
+  const hls = new Hls();
+
+  window.currentHls = hls;
+
   hls.loadSource(channel.url);
+
   hls.attachMedia(video);
-  hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+
+  hls.on(
+   Hls.Events.MANIFEST_PARSED,
+   function(){
+    video.play().catch(()=>{});
+   }
+  );
+
+  hls.on(Hls.Events.ERROR,function(event,data){
+
+   if(data.fatal){
+    console.error("Erreur de lecture :",data);
+   }
+
+  });
+
  }else{
-  video.src=channel.url;
+
+  video.src = channel.url;
+
   video.play().catch(()=>{});
+
  }
 
- player.scrollIntoView({behavior:"smooth",block:"start"});
+ player.scrollIntoView({
+  behavior:"smooth",
+  block:"start"
+ });
+
 }
+
+// CHARGEMENT AUTOMATIQUE DE LA PLAYLIST
 
 async function loadPlaylist(){
- const status=document.getElementById("status");
+
+ const status = document.getElementById("status");
 
  try{
-  const response=await fetch(PLAYLIST_URL);
 
-  if(!response.ok)throw new Error("Playlist introuvable.");
+  const response = await fetch(PLAYLIST_URL);
 
-  const data=await response.text();
+  if(!response.ok){
 
-  if(!data.includes("#EXTM3U"))
-   throw new Error("Format M3U invalide.");
+   throw new Error(
+    "Impossible de récupérer la playlist : HTTP " +
+    response.status
+   );
 
-  channels=parseM3U(data);
+  }
 
-  if(!channels.length)
+  const data = await response.text();
+
+  if(!data.trim().startsWith("#EXTM3U")){
+
+   throw new Error("Le fichier M3U est invalide.");
+
+  }
+
+  channels = parseM3U(data);
+
+  if(channels.length === 0){
+
    throw new Error("Aucune chaîne trouvée.");
 
+  }
+
   renderCategories();
+
   render();
 
-  status.textContent=channels.length+" chaînes chargées.";
+  status.textContent =
+   channels.length + " chaînes chargées avec succès.";
 
  }catch(error){
-  status.textContent="Erreur : "+error.message+
-  " Vérifie le fichier M3U sur GitHub.";
+
+  console.error(error);
+
+  status.textContent =
+   "Erreur : " + error.message;
+
  }
+
 }
 
+// DEMARRAGE
+
 loadPlaylist();
+
 </script>
 
 </body>
