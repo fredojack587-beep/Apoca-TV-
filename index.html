@@ -5,211 +5,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d18">
-<title>Apoca TV</title>
+<title>APOCA TV</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
-:root {
-  --bg:#080d18;
-  --panel:#111a2b;
-  --blue:#168cff;
-  --cyan:#00d9ff;
-  --text:#f4f7ff;
-  --muted:#91a1bb;
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+ background:#080d18;
+ color:white;
+ font-family:Arial,sans-serif;
 }
 
-* {box-sizing:border-box}
-
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,sans-serif;
+header{
+ padding:18px 15px;
+ background:#101a2c;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
 }
 
-header {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:15px 20px;
-  background:#0c1423;
-  border-bottom:1px solid #24334a;
+.logo{
+ font-size:24px;
+ font-weight:bold;
+ color:#e50936;
 }
 
-.logo {
-  width:45px;
-  height:45px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  font-size:27px;
-  font-weight:bold;
-  background:linear-gradient(135deg,var(--blue),var(--cyan));
+.logo span{color:white}
+
+.search{
+ padding:10px;
+ background:#19263b;
+ border:none;
+ border-radius:8px;
+ color:white;
+ width:130px;
+ outline:none;
 }
 
-header h1 {margin:0;font-size:23px}
-header p {margin:4px 0 0;color:var(--muted);font-size:12px}
-
-main {max-width:1500px;margin:auto;padding:15px}
-
-/* MENU HORIZONTAL */
-
-.nav {
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  padding:12px 0;
-  scrollbar-width:none;
+nav{
+ display:flex;
+ overflow-x:auto;
+ white-space:nowrap;
+ gap:25px;
+ padding:16px;
+ background:#101a2c;
+ border-top:1px solid #26334a;
+ border-bottom:1px solid #26334a;
+ scrollbar-width:none;
 }
 
-.nav::-webkit-scrollbar {display:none}
+nav::-webkit-scrollbar,
+.categories::-webkit-scrollbar{display:none}
 
-.nav button {
-  flex-shrink:0;
-  background:#17243a;
-  color:#cbd8ed;
-  border-radius:25px;
-  padding:11px 19px;
-  white-space:nowrap;
+nav button{
+ background:none;
+ border:none;
+ color:#aab5c7;
+ font-size:14px;
+ font-weight:bold;
+ cursor:pointer;
+ flex-shrink:0;
 }
 
-.nav button.active {
-  background:var(--blue);
-  color:white;
+nav button.active{color:#e50936}
+
+.container{padding:16px}
+
+h2{
+ font-size:19px;
+ margin-bottom:15px;
 }
 
-/* LECTEUR */
-
-.player-panel {
-  background:var(--panel);
-  border-radius:14px;
-  overflow:hidden;
-  margin-bottom:18px;
+.categories{
+ display:flex;
+ overflow-x:auto;
+ gap:10px;
+ margin-bottom:22px;
+ scrollbar-width:none;
 }
 
-.player-heading {padding:13px 16px}
-.player-heading h2 {margin:0;font-size:18px}
-.player-heading p {color:var(--muted);margin:6px 0 0}
-
-video {
-  display:block;
-  width:100%;
-  aspect-ratio:16/9;
-  background:#000;
-  object-fit:contain;
+.categories button{
+ flex-shrink:0;
+ padding:10px 16px;
+ border-radius:20px;
+ border:1px solid #26334a;
+ background:#142137;
+ color:white;
 }
 
-.controls {padding:12px}
-
-button {
-  border:0;
-  cursor:pointer;
-  color:white;
-  background:var(--blue);
-  font-weight:bold;
-  padding:11px 16px;
-  border-radius:9px;
+.categories button.active{
+ background:#e50936;
+ border-color:#e50936;
 }
 
-/* LISTE DES CHAINES */
-
-.channels-panel {
-  background:var(--panel);
-  border-radius:14px;
-  padding:14px;
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;
 }
 
-.channels-header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-bottom:15px;
+.channel{
+ background:#142137;
+ border-radius:10px;
+ overflow:hidden;
+ cursor:pointer;
+ min-width:0;
 }
 
-.channels-header h2 {margin:0;font-size:18px}
-
-#search {
-  background:#080f1d;
-  color:white;
-  border:1px solid #30405b;
-  padding:12px;
-  border-radius:9px;
-  width:100%;
-  max-width:350px;
+.channel img{
+ width:100%;
+ height:85px;
+ object-fit:contain;
+ padding:10px;
+ background:#1c2b43;
 }
 
-#channelList {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(145px,1fr));
-  gap:12px;
+.channel p{
+ padding:9px 5px;
+ font-size:12px;
+ text-align:center;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
-.channel {
-  background:#17243a;
-  border-radius:11px;
-  padding:12px;
-  text-align:center;
-  cursor:pointer;
-  min-width:0;
-  transition:.2s;
+.player{
+ display:none;
+ background:#000;
+ margin-bottom:20px;
+ border-radius:10px;
+ overflow:hidden;
 }
 
-.channel:hover {
-  background:#203c60;
-  transform:translateY(-2px);
+video{
+ width:100%;
+ max-height:240px;
+ background:#000;
 }
 
-.channel img {
-  width:65px;
-  height:65px;
-  object-fit:contain;
-  margin-bottom:8px;
-  border-radius:8px;
+.player-title{
+ padding:12px;
+ font-weight:bold;
 }
 
-.channel-name {
-  font-size:13px;
-  font-weight:bold;
-  overflow-wrap:anywhere;
+.message{
+ text-align:center;
+ padding:35px 10px;
+ color:#aab5c7;
+ font-size:14px;
 }
 
-.channel-group {
-  font-size:11px;
-  color:var(--muted);
-  margin-top:5px;
-}
+.section{display:none}
+.section.active{display:block}
 
-.empty {
-  color:var(--muted);
-  padding:20px;
-  text-align:center;
-}
-
-#status {
-  font-size:12px;
-  color:var(--muted);
-  padding:8px 2px;
-}
-
-footer {
-  text-align:center;
-  padding:20px;
-  color:var(--muted);
-  font-size:12px;
-}
-
-@media(max-width:600px) {
-  main {padding:10px}
-  #channelList {
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:8px;
-  }
-  .channel {padding:9px 5px}
-  .channel img {width:48px;height:48px}
-  .channel-name {font-size:11px}
-  .channels-header {align-items:stretch}
-  #search {max-width:none}
+@media(min-width:700px){
+ .grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+ video{max-height:450px}
+ .channel img{height:120px}
 }
 </style>
 </head>
@@ -217,368 +171,253 @@ footer {
 <body>
 
 <header>
-  <div class="logo">A</div>
-  <div>
-    <h1>APOCA TV</h1>
-    <p>Votre télévision, partout avec vous</p>
-  </div>
+ <div class="logo">APOCA <span>TV</span></div>
+ <input class="search" id="search"
+ placeholder="Rechercher..." oninput="render()">
 </header>
 
-<main>
-
-<!-- CATEGORIES HORIZONTALES -->
-
-<nav class="nav" id="categoryMenu">
-  <button class="active" data-category="ALL">TOUT</button>
+<nav>
+ <button class="active" onclick="showSection('home',this)">Accueil</button>
+ <button onclick="showSection('live',this)">TV EN DIRECT</button>
+ <button onclick="showSection('movies',this)">FILMS</button>
+ <button onclick="showSection('series',this)">SÉRIES</button>
+ <button onclick="showSection('favorites',this)">FAVORIS</button>
 </nav>
 
-<!-- LECTEUR VIDEO -->
+<main class="container">
 
-<section class="player-panel">
+<div class="player" id="player">
+ <video id="video" controls autoplay playsinline></video>
+ <div class="player-title" id="playerTitle"></div>
+</div>
 
-  <div class="player-heading">
-    <h2 id="playingTitle">Bienvenue sur APOCA TV</h2>
-    <p id="playingSubtitle">Choisissez votre chaîne préférée</p>
-  </div>
-
-  <video id="player" controls playsinline></video>
-
-  <div class="controls">
-    <button id="fullscreenButton">Plein écran</button>
-    <button id="stopButton" style="background:#263650">
-      Arrêter
-    </button>
-  </div>
-
+<section class="section active" id="home">
+ <h2>Bienvenue sur APOCA TV</h2>
+ <p style="color:#aab5c7;margin-bottom:20px">
+ Retrouvez vos programmes préférés.
+ </p>
+ <h2>Nos chaînes</h2>
+ <div class="categories" id="categories"></div>
+ <div class="grid" id="channels"></div>
+ <div class="message" id="status">Chargement de la playlist...</div>
 </section>
 
-<!-- CHAINES -->
+<section class="section" id="live">
+ <h2>TV EN DIRECT</h2>
+ <div class="categories" id="categoriesLive"></div>
+ <div class="grid" id="liveChannels"></div>
+</section>
 
-<section class="channels-panel">
+<section class="section" id="movies">
+ <h2>FILMS</h2>
+ <div class="grid" id="movieChannels"></div>
+</section>
 
-  <div class="channels-header">
-    <h2>Chaînes TV</h2>
-    <input id="search" type="search"
-      placeholder="Rechercher une chaîne...">
-  </div>
+<section class="section" id="series">
+ <h2>SÉRIES</h2>
+ <div class="grid" id="seriesChannels"></div>
+</section>
 
-  <div id="status">Chargement des chaînes...</div>
-
-  <div id="channelList">
-    <p class="empty">Chargement...</p>
-  </div>
-
+<section class="section" id="favorites">
+ <h2>MES FAVORIS</h2>
+ <div class="grid" id="favoriteChannels"></div>
 </section>
 
 </main>
 
-<footer>
-APOCA TV © 2026
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-
 <script>
+const PLAYLIST_URL="./tv_channels_HC22PAH_plus.m3u";
 
-const video = document.getElementById("player");
-const channelList = document.getElementById("channelList");
-const categoryMenu = document.getElementById("categoryMenu");
-const searchInput = document.getElementById("search");
-const statusText = document.getElementById("status");
+let channels=[];
+let selectedCategory="Tous";
+let favorites=JSON.parse(localStorage.getItem("apoca_favorites")||"[]");
 
-let channels = [];
-let hls = null;
-let selectedCategory = "ALL";
+function showSection(id,button){
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
 
-function status(message) {
-  statusText.textContent = message;
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+
+ document.getElementById("player").style.display="none";
 }
 
-function getAttribute(line,name) {
-  const match = line.match(
-    new RegExp(name+'="([^"]*)"',"i")
-  );
-  return match ? match[1] : "";
-}
+function parseM3U(data){
+ const lines=data.split(/\r?\n/);
+ let result=[];
+ let current=null;
 
-/* LECTURE DU FICHIER M3U */
+ for(let line of lines){
+  line=line.trim();
 
-function parseM3U(data) {
+  if(line.startsWith("#EXTINF")){
+   const name=line.split(",").slice(1).join(",").trim();
 
-  const lines = data.split(/\r?\n/);
-  const result = [];
-  let current = null;
+   const group=line.match(/group-title="([^"]*)"/i);
+   const logo=line.match(/tvg-logo="([^"]*)"/i);
 
-  for(const raw of lines) {
-
-    const line = raw.trim();
-    if(!line) continue;
-
-    if(line.startsWith("#EXTINF")) {
-
-      const comma = line.lastIndexOf(",");
-
-      const name = comma >= 0
-        ? line.slice(comma+1).trim()
-        : "Chaîne sans nom";
-
-      current = {
-        name:name,
-        group:getAttribute(line,"group-title") || "Autres",
-        logo:getAttribute(line,"tvg-logo"),
-        url:""
-      };
-
-    } else if(!line.startsWith("#") && current) {
-
-      current.url = line;
-      result.push(current);
-      current = null;
-
-    }
+   current={
+    name:name||"Chaîne sans nom",
+    category:group?group[1]:"Autres",
+    logo:logo?logo[1]:"",
+    url:""
+   };
   }
-
-  return result;
-}
-
-/* CHARGEMENT AUTOMATIQUE */
-
-async function loadPlaylist() {
-
-  try {
-
-    status("Chargement de la playlist...");
-
-    const response = await fetch(
-      "./tv_channels_HC22PAH_plus.m3u"
-    );
-
-    if(!response.ok) {
-      throw new Error("Fichier M3U introuvable");
-    }
-
-    const data = await response.text();
-
-    if(!data.includes("#EXTM3U")) {
-      throw new Error("Playlist M3U invalide");
-    }
-
-    channels = parseM3U(data);
-
-    if(!channels.length) {
-      throw new Error("Aucune chaîne trouvée");
-    }
-
-    createCategories();
-    renderChannels();
-
-    status(channels.length+" chaînes chargées avec succès.");
-
-  } catch(error) {
-
-    status(
-      "Erreur : "+error.message+
-      ". Vérifiez que le fichier M3U est dans le même dossier."
-    );
-
-    channelList.innerHTML =
-      '<p class="empty">Impossible de charger les chaînes.</p>';
-
+  else if(line && !line.startsWith("#") && current){
+   current.url=line;
+   result.push(current);
+   current=null;
   }
+ }
+ return result;
 }
 
-/* CREATION DES CATEGORIES */
+function getType(channel){
+ const c=channel.category.toLowerCase();
+ const n=channel.name.toLowerCase();
 
-function createCategories() {
+ if(c.includes("movie")||c.includes("film")||n.includes("vod"))
+  return "movies";
 
-  const categories = [
-    ...new Set(channels.map(c=>c.group))
-  ].sort((a,b)=>a.localeCompare(b));
+ if(c.includes("series")||c.includes("série"))
+  return "series";
 
-  categoryMenu.innerHTML = "";
+ return "live";
+}
 
-  addCategoryButton("TOUT","ALL",true);
+function makeCard(channel){
+ const card=document.createElement("div");
+ card.className="channel";
 
-  categories.forEach(category=>{
-    addCategoryButton(category,category,false);
+ const img=document.createElement("img");
+ img.src=channel.logo||"";
+ img.alt="";
+ img.onerror=function(){
+  this.style.display="none";
+ };
+
+ const name=document.createElement("p");
+ name.textContent=channel.name;
+
+ card.appendChild(img);
+ card.appendChild(name);
+
+ card.onclick=()=>playChannel(channel);
+
+ return card;
+}
+
+function renderCategories(){
+ const categories=["Tous",...new Set(channels.map(c=>c.category))];
+
+ ["categories","categoriesLive"].forEach(id=>{
+  const el=document.getElementById(id);
+  el.innerHTML="";
+
+  categories.forEach(cat=>{
+   const btn=document.createElement("button");
+   btn.textContent=cat;
+   btn.className=cat===selectedCategory?"active":"";
+
+   btn.onclick=()=>{
+    selectedCategory=cat;
+    render();
+    renderCategories();
+   };
+
+   el.appendChild(btn);
   });
-
+ });
 }
 
-function addCategoryButton(label,value,active) {
+function render(){
+ const search=document.getElementById("search").value.toLowerCase();
 
-  const button = document.createElement("button");
+ const filtered=channels.filter(c=>{
+  const matchName=c.name.toLowerCase().includes(search);
+  const matchCategory=selectedCategory==="Tous"||c.category===selectedCategory;
+  return matchName&&matchCategory;
+ });
 
-  button.textContent = label;
-  button.dataset.category = value;
+ const live=filtered.filter(c=>getType(c)==="live");
+ const movies=filtered.filter(c=>getType(c)==="movies");
+ const series=filtered.filter(c=>getType(c)==="series");
 
-  if(active) button.classList.add("active");
+ function fill(id,list){
+  const el=document.getElementById(id);
+  el.innerHTML="";
+  list.forEach(c=>el.appendChild(makeCard(c)));
+ }
 
-  button.addEventListener("click",()=>{
-
-    selectedCategory = value;
-
-    categoryMenu.querySelectorAll("button")
-      .forEach(btn=>btn.classList.remove("active"));
-
-    button.classList.add("active");
-
-    renderChannels();
-
-  });
-
-  categoryMenu.appendChild(button);
+ fill("channels",filtered);
+ fill("liveChannels",live);
+ fill("movieChannels",movies);
+ fill("seriesChannels",series);
+ fill("favoriteChannels",
+  channels.filter(c=>favorites.includes(c.url))
+ );
 }
 
-/* AFFICHAGE DES CHAINES */
+function playChannel(channel){
+ const player=document.getElementById("player");
+ const video=document.getElementById("video");
 
-function renderChannels() {
+ player.style.display="block";
+ document.getElementById("playerTitle").textContent=channel.name;
 
-  const query = searchInput.value.toLowerCase().trim();
+ video.pause();
+ video.removeAttribute("src");
+ video.load();
 
-  const filtered = channels.filter(channel=>{
+ if(window.currentHls){
+  window.currentHls.destroy();
+  window.currentHls=null;
+ }
 
-    const categoryMatch =
-      selectedCategory === "ALL" ||
-      channel.group === selectedCategory;
+ if(Hls.isSupported() && channel.url.includes(".m3u8")){
+  const hls=new Hls();
+  window.currentHls=hls;
+  hls.loadSource(channel.url);
+  hls.attachMedia(video);
+  hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+ }else{
+  video.src=channel.url;
+  video.play().catch(()=>{});
+ }
 
-    const searchMatch =
-      channel.name.toLowerCase().includes(query) ||
-      channel.group.toLowerCase().includes(query);
-
-    return categoryMatch && searchMatch;
-
-  });
-
-  channelList.replaceChildren();
-
-  if(!filtered.length) {
-
-    channelList.innerHTML =
-      '<p class="empty">Aucune chaîne trouvée.</p>';
-
-    return;
-  }
-
-  filtered.forEach(channel=>{
-
-    const item = document.createElement("div");
-    item.className = "channel";
-
-    const img = document.createElement("img");
-    img.loading = "lazy";
-    img.alt = "";
-    img.src = channel.logo || "";
-
-    img.onerror = ()=>{
-      img.style.visibility = "hidden";
-    };
-
-    const name = document.createElement("div");
-    name.className = "channel-name";
-    name.textContent = channel.name;
-
-    const group = document.createElement("div");
-    group.className = "channel-group";
-    group.textContent = channel.group;
-
-    item.append(img,name,group);
-
-    item.addEventListener("click",()=>{
-      playChannel(channel);
-    });
-
-    channelList.appendChild(item);
-
-  });
-
+ player.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-/* LECTURE DES CHAINES */
+async function loadPlaylist(){
+ const status=document.getElementById("status");
 
-function playChannel(channel) {
+ try{
+  const response=await fetch(PLAYLIST_URL);
 
-  if(hls) {
-    hls.destroy();
-    hls = null;
-  }
+  if(!response.ok)throw new Error("Playlist introuvable.");
 
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
+  const data=await response.text();
 
-  document.getElementById("playingTitle")
-    .textContent = channel.name;
+  if(!data.includes("#EXTM3U"))
+   throw new Error("Format M3U invalide.");
 
-  document.getElementById("playingSubtitle")
-    .textContent = channel.group;
+  channels=parseM3U(data);
 
-  const streamUrl = channel.url;
+  if(!channels.length)
+   throw new Error("Aucune chaîne trouvée.");
 
-  if(/\.m3u8($|\?)/i.test(streamUrl) &&
-     window.Hls && Hls.isSupported()) {
+  renderCategories();
+  render();
 
-    hls = new Hls();
+  status.textContent=channels.length+" chaînes chargées.";
 
-    hls.loadSource(streamUrl);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.ERROR,(_,data)=>{
-
-      if(data.fatal) {
-        status("Erreur de lecture de cette chaîne.");
-      }
-
-    });
-
-  } else {
-
-    video.src = streamUrl;
-    video.load();
-
-  }
-
-  video.play().catch(()=>{
-    status("Appuyez sur lecture pour démarrer la chaîne.");
-  });
-
+ }catch(error){
+  status.textContent="Erreur : "+error.message+
+  " Vérifie le fichier M3U sur GitHub.";
+ }
 }
-
-/* RECHERCHE */
-
-searchInput.addEventListener("input",renderChannels);
-
-/* ARRETER */
-
-document.getElementById("stopButton")
-.addEventListener("click",()=>{
-
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-
-  if(hls) {
-    hls.destroy();
-    hls = null;
-  }
-
-});
-
-/* PLEIN ECRAN */
-
-document.getElementById("fullscreenButton")
-.addEventListener("click",()=>{
-
-  if(video.requestFullscreen) {
-    video.requestFullscreen();
-  }
-
-});
-
-/* DEMARRAGE AUTOMATIQUE */
 
 loadPlaylist();
-
 </script>
 
 </body>
