@@ -1,588 +1,475 @@
 
-<!DOCTYPE html>  <html lang="fr">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<meta name="theme-color" content="#080d18">  <title>APOCA TV</title>  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>  <style>  
-*{  
- box-sizing:border-box;  
- margin:0;  
- padding:0;  
-}  
-  
-body{  
- background:#080d18;  
- color:white;  
- font-family:Arial,sans-serif;  
-}  
-  
-header{  
- padding:17px 15px;  
- background:#101a2c;  
- display:flex;  
- align-items:center;  
- justify-content:space-between;  
- gap:12px;  
-}  
-  
-.logo{  
- font-size:24px;  
- font-weight:bold;  
- color:#e50936;  
- white-space:nowrap;  
-}  
-  
-.logo span{color:white}  
-  
-.search{  
- width:145px;  
- padding:11px;  
- background:#19263b;  
- border:none;  
- border-radius:8px;  
- color:white;  
- outline:none;  
-}  
-  
-nav{  
- display:flex;  
- overflow-x:auto;  
- white-space:nowrap;  
- gap:25px;  
- padding:17px 15px;  
- background:#101a2c;  
- border-top:1px solid #26334a;  
- border-bottom:1px solid #26334a;  
- scrollbar-width:none;  
-}  
-  
-nav::-webkit-scrollbar,  
-.categories::-webkit-scrollbar{  
- display:none;  
-}  
-  
-nav button{  
- background:none;  
- border:none;  
- color:#aab5c7;  
- font-size:13px;  
- font-weight:bold;  
- cursor:pointer;  
- flex-shrink:0;  
-}  
-  
-nav button.active{  
- color:#e50936;  
- border-bottom:2px solid #e50936;  
- padding-bottom:7px;  
-}  
-  
-.container{  
- padding:16px;  
-}  
-  
-h2{  
- font-size:19px;  
- margin-bottom:15px;  
-}  
-  
-.player{  
- display:none;  
- background:#000;  
- margin-bottom:22px;  
- border-radius:12px;  
- overflow:hidden;  
-}  
-  
-video{  
- width:100%;  
- max-height:260px;  
- background:black;  
-}  
-  
-.player-title{  
- padding:13px;  
- font-weight:bold;  
-}  
-  
-.categories{  
- display:flex;  
- overflow-x:auto;  
- gap:10px;  
- margin-bottom:22px;  
- scrollbar-width:none;  
-}  
-  
-.categories button{  
- flex-shrink:0;  
- padding:10px 16px;  
- border-radius:20px;  
- border:1px solid #26334a;  
- background:#142137;  
- color:white;  
- cursor:pointer;  
-}  
-  
-.categories button.active{  
- background:#e50936;  
- border-color:#e50936;  
-}  
-  
-.grid{  
- display:grid;  
- grid-template-columns:repeat(3,minmax(0,1fr));  
- gap:12px;  
-}  
-  
-.channel{  
- background:#142137;  
- border-radius:10px;  
- overflow:hidden;  
- cursor:pointer;  
- min-width:0;  
-}  
-  
-.channel img{  
- width:100%;  
- height:85px;  
- object-fit:contain;  
- padding:10px;  
- background:#1c2b43;  
-}  
-  
-.channel p{  
- padding:9px 5px;  
- font-size:12px;  
- text-align:center;  
- white-space:nowrap;  
- overflow:hidden;  
- text-overflow:ellipsis;  
-}  
-  
-.section{  
- display:none;  
-}  
-  
-.section.active{  
- display:block;  
-}  
-  
-.message{  
- text-align:center;  
- padding:25px 10px;  
- color:#aab5c7;  
- font-size:14px;  
-}  
-  
-@media(min-width:700px){  
- .grid{  
-  grid-template-columns:repeat(5,minmax(0,1fr));  
- }  
- video{max-height:450px}  
- .channel img{height:120px}  
-}  
-</style>  </head>  <body>  <header>  
- <div class="logo">APOCA <span>TV</span></div>  
- <input  
-  class="search"  
-  id="search"  
-  placeholder="Rechercher..."  
-  oninput="render()"  
- >  
-</header>  <!-- MENU HORIZONTAL -->  <nav>  
- <button class="active" onclick="showSection('home',this)">ACCUEIL</button>  
- <button onclick="showSection('live',this)">TV EN DIRECT</button>  
- <button onclick="showSection('movies',this)">FILMS</button>  
- <button onclick="showSection('series',this)">SÉRIES</button>  
- <button onclick="showSection('favorites',this)">FAVORIS</button>  
-</nav>  <main class="container">  <!-- LECTEUR VIDEO -->  <div class="player" id="player">  
- <video id="video" controls autoplay playsinline></video>  
- <div class="player-title" id="playerTitle"></div>  
-</div>  <!-- ACCUEIL -->  <section class="section active" id="home">   <h2>Bienvenue sur APOCA TV</h2>   <p style="color:#aab5c7;margin-bottom:22px">  
-  Retrouvez vos programmes préférés.  
- </p>   <h2>Catégories</h2>   <div class="categories" id="categories"></div>   <h2>Toutes les chaînes</h2>   <div class="grid" id="channels"></div>   <div class="message" id="status">  
-  Chargement des chaînes...  
- </div>  </section>  <!-- DIRECT -->  <section class="section" id="live">   <h2>TV EN DIRECT</h2>   <div class="categories" id="categoriesLive"></div>   <div class="grid" id="liveChannels"></div>  </section>  <!-- FILMS -->  <section class="section" id="movies">   <h2>FILMS</h2>   <div class="grid" id="movieChannels"></div>  </section>  <!-- SERIES -->  <section class="section" id="series">   <h2>SÉRIES</h2>   <div class="grid" id="seriesChannels"></div>  </section>  <!-- FAVORIS -->  <section class="section" id="favorites">   <h2>MES FAVORIS</h2>   <div class="grid" id="favoriteChannels"></div>  </section>  </main>  <script>  
-  
-// LIEN DIRECT DE TA PLAYLIST GITHUB  
-  
-const PLAYLIST_URL =  
-"https://raw.githubusercontent.com/fredojacl/Apoca-TV-/main/tv_channels_HC22PAH_plus.m3u";  
-  
-let channels = [];  
-  
-let selectedCategory = "Tous";  
-  
-let favorites = JSON.parse(  
- localStorage.getItem("apoca_favorites") || "[]"  
-);  
-  
-// NAVIGATION  
-  
-function showSection(id,button){  
-  
- document.querySelectorAll(".section").forEach(section=>{  
-  section.classList.remove("active");  
- });  
-  
- document.getElementById(id).classList.add("active");  
-  
- document.querySelectorAll("nav button").forEach(btn=>{  
-  btn.classList.remove("active");  
- });  
-  
- button.classList.add("active");  
-  
-}  
-  
-// LECTURE DU FICHIER M3U  
-  
-function parseM3U(data){  
-  
- const lines = data.split(/\r?\n/);  
-  
- let result = [];  
-  
- let current = null;  
-  
- for(let line of lines){  
-  
-  line = line.trim();  
-  
-  if(line.startsWith("#EXTINF")){  
-  
-   const name = line.split(",").slice(1).join(",").trim();  
-  
-   const group = line.match(/group-title="([^"]*)"/i);  
-  
-   const logo = line.match(/tvg-logo="([^"]*)"/i);  
-  
-   const tvgName = line.match(/tvg-name="([^"]*)"/i);  
-  
-   current = {  
-  
-    name: name || (tvgName ? tvgName[1] : "Chaîne sans nom"),  
-  
-    category: group ? group[1] : "Autres",  
-  
-    logo: logo ? logo[1] : "",  
-  
-    url: ""  
-  
-   };  
-  
-  }  
-  
-  else if(  
-   line &&  
-   !line.startsWith("#") &&  
-   current  
-  ){  
-  
-   current.url = line;  
-  
-   result.push(current);  
-  
-   current = null;  
-  
-  }  
-  
- }  
-  
- return result;  
-  
-}  
-  
-// DETERMINER LE TYPE DE CONTENU  
-  
-function getType(channel){  
-  
- const c = channel.category.toLowerCase();  
-  
- const n = channel.name.toLowerCase();  
-  
- if(  
-  c.includes("movie") ||  
-  c.includes("film") ||  
-  c.includes("vod")  
- ){  
-  return "movies";  
- }  
-  
- if(  
-  c.includes("series") ||  
-  c.includes("série") ||  
-  c.includes("serie")  
- ){  
-  return "series";  
- }  
-  
- return "live";  
-  
-}  
-  
-// CREATION DES CARTES  
-  
-function makeCard(channel){  
-  
- const card = document.createElement("div");  
-  
- card.className = "channel";  
-  
- const img = document.createElement("img");  
-  
- img.src = channel.logo || "";  
-  
- img.alt = channel.name;  
-  
- img.onerror = function(){  
-  
-  this.style.display = "none";  
-  
- };  
-  
- const name = document.createElement("p");  
-  
- name.textContent = channel.name;  
-  
- card.appendChild(img);  
-  
- card.appendChild(name);  
-  
- card.onclick = function(){  
-  
-  playChannel(channel);  
-  
- };  
-  
- return card;  
-  
-}  
-  
-// CATEGORIES HORIZONTALES  
-  
-function renderCategories(){  
-  
- const categories = [  
-  "Tous",  
-  ...new Set(channels.map(c=>c.category))  
- ];  
-  
- ["categories","categoriesLive"].forEach(id=>{  
-  
-  const el = document.getElementById(id);  
-  
-  el.innerHTML = "";  
-  
-  categories.forEach(cat=>{  
-  
-   const btn = document.createElement("button");  
-  
-   btn.textContent = cat;  
-  
-   btn.className =  
-    cat === selectedCategory ? "active" : "";  
-  
-   btn.onclick = function(){  
-  
-    selectedCategory = cat;  
-  
-    render();  
-  
-    renderCategories();  
-  
-   };  
-  
-   el.appendChild(btn);  
-  
-  });  
-  
- });  
-  
-}  
-  
-// AFFICHAGE DES CHAINES  
-  
-function render(){  
-  
- const search =  
-  document.getElementById("search").value.toLowerCase();  
-  
- const filtered = channels.filter(c=>{  
-  
-  const matchName =  
-   c.name.toLowerCase().includes(search);  
-  
-  const matchCategory =  
-   selectedCategory === "Tous" ||  
-   c.category === selectedCategory;  
-  
-  return matchName && matchCategory;  
-  
- });  
-  
- const live = filtered.filter(c=>getType(c)==="live");  
-  
- const movies = filtered.filter(c=>getType(c)==="movies");  
-  
- const series = filtered.filter(c=>getType(c)==="series");  
-  
- function fill(id,list){  
-  
-  const el = document.getElementById(id);  
-  
-  el.innerHTML = "";  
-  
-  list.forEach(c=>{  
-  
-   el.appendChild(makeCard(c));  
-  
-  });  
-  
- }  
-  
- fill("channels",filtered);  
-  
- fill("liveChannels",live);  
-  
- fill("movieChannels",movies);  
-  
- fill("seriesChannels",series);  
-  
- fill(  
-  "favoriteChannels",  
-  channels.filter(c=>favorites.includes(c.url))  
- );  
-  
-}  
-  
-// LECTEUR VIDEO  
-  
-function playChannel(channel){  
-  
- const player = document.getElementById("player");  
-  
- const video = document.getElementById("video");  
-  
- player.style.display = "block";  
-  
- document.getElementById("playerTitle").textContent =  
-  channel.name;  
-  
- video.pause();  
-  
- video.removeAttribute("src");  
-  
- video.load();  
-  
- if(window.currentHls){  
-  
-  window.currentHls.destroy();  
-  
-  window.currentHls = null;  
-  
- }  
-  
- if(  
-  window.Hls &&  
-  Hls.isSupported() &&  
-  channel.url.includes(".m3u8")  
- ){  
-  
-  const hls = new Hls();  
-  
-  window.currentHls = hls;  
-  
-  hls.loadSource(channel.url);  
-  
-  hls.attachMedia(video);  
-  
-  hls.on(  
-   Hls.Events.MANIFEST_PARSED,  
-   function(){  
-    video.play().catch(()=>{});  
-   }  
-  );  
-  
-  hls.on(Hls.Events.ERROR,function(event,data){  
-  
-   if(data.fatal){  
-    console.error("Erreur de lecture :",data);  
-   }  
-  
-  });  
-  
- }else{  
-  
-  video.src = channel.url;  
-  
-  video.play().catch(()=>{});  
-  
- }  
-  
- player.scrollIntoView({  
-  behavior:"smooth",  
-  block:"start"  
- });  
-  
-}  
-  
-// CHARGEMENT AUTOMATIQUE DE LA PLAYLIST  
-  
-async function loadPlaylist(){  
-  
- const status = document.getElementById("status");  
-  
- try{  
-  
-  const response = await fetch(PLAYLIST_URL);  
-  
-  if(!response.ok){  
-  
-   throw new Error(  
-    "Impossible de récupérer la playlist : HTTP " +  
-    response.status  
-   );  
-  
-  }  
-  
-  const data = await response.text();  
-  
-  if(!data.trim().startsWith("#EXTM3U")){  
-  
-   throw new Error("Le fichier M3U est invalide.");  
-  
-  }  
-  
-  channels = parseM3U(data);  
-  
-  if(channels.length === 0){  
-  
-   throw new Error("Aucune chaîne trouvée.");  
-  
-  }  
-  
-  renderCategories();  
-  
-  render();  
-  
-  status.textContent =  
-   channels.length + " chaînes chargées avec succès.";  
-  
- }catch(error){  
-  
-  console.error(error);  
-  
-  status.textContent =  
-   "Erreur : " + error.message;  
-  
- }  
-  
-}  
-  
-// DEMARRAGE  
-  
-loadPlaylist();  
-  
-</script>  </body>  
- </html>  
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b16">
+<title>APOCA TV</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+:root{
+--bg:#080b16;
+--panel:#11182a;
+--panel2:#171f35;
+--line:#26314b;
+--muted:#9aa7bf;
+--accent:#7565f6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+background:var(--bg);
+color:#f5f7ff;
+font-family:Arial,sans-serif;
+min-height:100vh
+}
+header{
+height:68px;padding:0 22px;
+display:flex;align-items:center;
+justify-content:space-between;
+background:#0d1322;
+border-bottom:1px solid var(--line);
+position:sticky;top:0;z-index:5;gap:16px
+}
+.brand{font-size:23px;font-weight:800;letter-spacing:1px}
+.brand span{color:#8b7cff}
+.search{
+width:min(360px,52vw);
+padding:12px 15px;border-radius:10px;
+border:1px solid var(--line);
+background:var(--panel2);color:white;outline:none
+}
+.layout{
+display:grid;
+grid-template-columns:220px minmax(250px,1fr) minmax(280px,38%);
+min-height:calc(100vh - 68px)
+}
+aside{
+background:#0d1322;
+border-right:1px solid var(--line);
+padding:22px 14px
+}
+.side-title{
+font-size:11px;color:#71809e;
+font-weight:bold;letter-spacing:1.5px;
+margin:8px 10px 14px
+}
+.cat{
+display:flex;width:100%;gap:11px;
+align-items:center;text-align:left;
+padding:12px 13px;margin:4px 0;
+border:0;border-radius:9px;
+background:transparent;color:#b8c2d7;
+cursor:pointer;font-size:14px
+}
+.cat:hover,.cat.active{
+background:#242044;color:white
+}
+.cat.active{box-shadow:inset 3px 0 var(--accent)}
+.source-note{
+margin:24px 9px 0;padding-top:15px;
+border-top:1px solid var(--line);
+font-size:11px;line-height:1.6;color:#75829a
+}
+main{padding:22px;min-width:0}
+.heading{
+display:flex;justify-content:space-between;
+align-items:center;gap:12px;margin-bottom:18px
+}
+.heading h1{font-size:22px}
+.sub{font-size:12px;color:var(--muted);margin-top:5px}
+.status{
+font-size:11px;color:#aeb9ce;
+text-align:right;max-width:46%
+}
+.channels{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(132px,1fr));
+gap:12px
+}
+.channel{
+background:var(--panel);
+border:1px solid #202a40;
+border-radius:12px;overflow:hidden;
+cursor:pointer;min-width:0;
+transition:.15s;color:white;text-align:left
+}
+.channel:hover,.channel:focus{
+border-color:#8274ff;transform:translateY(-2px);
+outline:none
+}
+.logo-wrap{
+height:90px;background:#192239;
+display:flex;align-items:center;
+justify-content:center;padding:12px
+}
+.channel img{max-width:100%;max-height:100%;object-fit:contain}
+.fallback{font-size:25px;font-weight:bold;color:#a8b4d0}
+.channel-name{
+padding:10px;font-size:12px;font-weight:bold;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.channel-group{
+padding:0 10px 10px;font-size:10px;
+color:#8e9bb5;white-space:nowrap;
+overflow:hidden;text-overflow:ellipsis
+}
+.player-panel{
+background:#0d1322;border-left:1px solid var(--line);
+padding:20px;min-width:0
+}
+.player-panel h2{font-size:16px;margin-bottom:13px}
+.screen{
+background:#000;border:1px solid #202a40;
+border-radius:13px;overflow:hidden;
+aspect-ratio:16/9;display:flex;
+align-items:center;justify-content:center
+}
+.screen video{width:100%;height:100%;background:#000}
+.placeholder{
+text-align:center;padding:20px;
+color:#7e8ba5;font-size:13px;line-height:1.7
+}
+.playing-title{font-size:14px;font-weight:bold;margin-top:13px}
+.playing-source{font-size:11px;color:#8290aa;margin-top:6px}
+.player-help{
+font-size:11px;line-height:1.6;
+color:#74819a;margin-top:18px
+}
+.empty{
+padding:35px 10px;text-align:center;
+color:var(--muted);font-size:13px;grid-column:1/-1
+}
+.mobile-cats{display:none}
+
+@media(max-width:900px){
+.layout{grid-template-columns:175px minmax(0,1fr)}
+.player-panel{
+grid-column:1/-1;border-left:0;
+border-top:1px solid var(--line)
+}
+.player-panel .screen{max-width:650px}
+}
+@media(max-width:600px){
+header{height:60px;padding:0 13px}
+.brand{font-size:19px}
+.search{width:48vw;padding:10px}
+.layout{display:block}
+.layout aside{display:none}
+main{padding:17px 13px}
+.heading h1{font-size:19px}
+.status{font-size:10px}
+.channels{
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:8px
+}
+.logo-wrap{height:74px;padding:8px}
+.channel-name{font-size:11px;padding:8px 6px}
+.channel-group{font-size:9px;padding:0 6px 8px}
+.mobile-cats{
+display:flex;gap:8px;overflow:auto;
+padding:0 13px 13px;background:#0d1322;
+scrollbar-width:none
+}
+.mobile-cats button{
+white-space:nowrap;padding:9px 13px;
+border:1px solid var(--line);
+border-radius:20px;background:var(--panel);
+color:#d5dcf0;font-size:12px
+}
+.mobile-cats button.active{
+background:#5144c7;border-color:#5144c7
+}
+.player-panel{padding:17px 13px}
+.player-panel .screen{max-width:none}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="brand">APOCA <span>TV</span></div>
+<input id="search" class="search" type="search"
+placeholder="Rechercher une chaîne…" autocomplete="off">
+</header>
+
+<div class="mobile-cats" id="mobileCats"></div>
+
+<div class="layout">
+
+<aside>
+<div class="side-title">BIBLIOTHÈQUE</div>
+<div id="sideCats"></div>
+<div class="source-note" id="sourceStatus">
+Préparation de la playlist…
+</div>
+</aside>
+
+<main>
+<div class="heading">
+<div>
+<h1 id="pageTitle">Toutes les chaînes</h1>
+<div class="sub" id="subtitle">Vos chaînes au même endroit</div>
+</div>
+<div class="status" id="totalStatus">Chargement…</div>
+</div>
+<div class="channels" id="channelGrid">
+<div class="empty">Chargement des chaînes…</div>
+</div>
+</main>
+
+<section class="player-panel">
+<h2>LECTEUR</h2>
+<div class="screen" id="screen">
+<div class="placeholder">
+▶<br>Choisissez une chaîne pour commencer
+</div>
+</div>
+<div class="playing-title" id="playingTitle">
+Aucune chaîne sélectionnée
+</div>
+<div class="playing-source" id="playingSource"></div>
+<div class="player-help">
+Certaines chaînes peuvent être indisponibles ou incompatibles
+avec le navigateur.
+</div>
+</section>
+
+</div>
+
+<script>
+const PLAYLIST_URL =
+"https://raw.githubusercontent.com/rikital/onyxia-data/main/data.m3u";
+
+let allChannels=[];
+let activeCategory="Tous";
+let hlsPlayer=null;
+
+const $=id=>document.getElementById(id);
+
+function parseM3U(text){
+const lines=text.replace(/^\uFEFF/,"").split(/\r?\n/);
+let current=null;
+const out=[];
+
+for(const raw of lines){
+const line=raw.trim();
+
+if(line.startsWith("#EXTINF")){
+const name=line.split(",").slice(1).join(",").trim();
+const group=line.match(/group-title="([^"]*)"/i);
+const logo=line.match(/tvg-logo="([^"]*)"/i);
+const tvg=line.match(/tvg-name="([^"]*)"/i);
+
+current={
+name:name||(tvg?tvg[1]:"Chaîne sans nom"),
+category:group&&group[1]?group[1]:"Autres",
+logo:logo?logo[1]:"",
+url:""
+};
+
+}else if(line&&!line.startsWith("#")&&current){
+current.url=line;
+out.push(current);
+current=null;
+}
+}
+return out;
+}
+
+function categoryOf(c){
+const s=(c.category+" "+c.name).toLowerCase();
+
+if(/sport|football|soccer/.test(s))return "Sports";
+if(/film|movie|cin[eé]ma|vod/.test(s))return "Films";
+if(/s[eé]rie|series|drama/.test(s))return "Séries";
+
+return "TV en direct";
+}
+
+function categories(){
+return ["Tous","TV en direct","Sports","Films","Séries"];
+}
+
+function setCategory(cat){
+activeCategory=cat;
+$("pageTitle").textContent=
+cat==="Tous"?"Toutes les chaînes":cat;
+render();
+renderCats();
+}
+
+function renderCats(){
+["sideCats","mobileCats"].forEach(id=>{
+const el=$(id);
+el.innerHTML="";
+
+categories().forEach(cat=>{
+const b=document.createElement("button");
+b.className=activeCategory===cat?"cat active":"cat";
+b.textContent=cat;
+b.onclick=()=>setCategory(cat);
+el.appendChild(b);
+});
+});
+}
+
+function makeCard(c){
+const card=document.createElement("button");
+card.className="channel";
+card.type="button";
+
+const wrap=document.createElement("div");
+wrap.className="logo-wrap";
+
+if(c.logo){
+const img=document.createElement("img");
+img.src=c.logo;
+img.alt="";
+img.loading="lazy";
+
+img.onerror=()=>{
+img.remove();
+const f=document.createElement("span");
+f.className="fallback";
+f.textContent=c.name.slice(0,1).toUpperCase();
+wrap.appendChild(f);
+};
+
+wrap.appendChild(img);
+}else{
+const f=document.createElement("span");
+f.className="fallback";
+f.textContent=c.name.slice(0,1).toUpperCase();
+wrap.appendChild(f);
+}
+
+const name=document.createElement("div");
+name.className="channel-name";
+name.textContent=c.name;
+
+const group=document.createElement("div");
+group.className="channel-group";
+group.textContent=c.category;
+
+card.append(wrap,name,group);
+card.onclick=()=>play(c);
+
+return card;
+}
+
+function render(){
+const q=$("search").value.trim().toLowerCase();
+
+let list=allChannels.filter(c=>
+(c.name+" "+c.category).toLowerCase().includes(q)
+);
+
+if(activeCategory!=="Tous"){
+list=list.filter(c=>categoryOf(c)===activeCategory);
+}
+
+$("channelGrid").innerHTML="";
+
+if(!list.length){
+$("channelGrid").innerHTML=
+'<div class="empty">Aucune chaîne trouvée.</div>';
+}else{
+list.forEach(c=>
+$("channelGrid").appendChild(makeCard(c))
+);
+}
+
+$("totalStatus").textContent=
+allChannels.length+" chaînes";
+
+$("subtitle").textContent=
+list.length+" résultat(s) affiché(s)";
+}
+
+function play(c){
+const screen=$("screen");
+screen.innerHTML="";
+
+const video=document.createElement("video");
+video.controls=true;
+video.autoplay=true;
+video.playsInline=true;
+screen.appendChild(video);
+
+$("playingTitle").textContent=c.name;
+$("playingSource").textContent="TV en direct";
+
+if(hlsPlayer){
+hlsPlayer.destroy();
+hlsPlayer=null;
+}
+
+video.pause();
+video.removeAttribute("src");
+video.load();
+
+if(/\.m3u8($|\?)/i.test(c.url)&&
+window.Hls&&Hls.isSupported()){
+
+hlsPlayer=new Hls();
+hlsPlayer.loadSource(c.url);
+hlsPlayer.attachMedia(video);
+
+hlsPlayer.on(Hls.Events.MANIFEST_PARSED,()=>{
+video.play().catch(()=>{});
+});
+
+}else{
+video.src=c.url;
+video.play().catch(()=>{});
+}
+}
+
+async function start(){
+const status=$("sourceStatus");
+
+try{
+const response=await fetch(PLAYLIST_URL,{cache:"no-store"});
+
+if(!response.ok){
+throw new Error("HTTP "+response.status);
+}
+
+const body=await response.text();
+
+if(!body.includes("#EXTM3U")){
+throw new Error("Fichier M3U invalide");
+}
+
+allChannels=parseM3U(body);
+
+if(!allChannels.length){
+throw new Error("Aucune chaîne trouvée");
+}
+
+status.textContent="Playlist chargée avec succès.";
+
+$("totalStatus").textContent=
+allChannels.length+" chaînes chargées";
+
+renderCats();
+render();
+
+}catch(error){
+status.textContent="Erreur : "+error.message;
+$("channelGrid").innerHTML=
+'<div class="empty">Impossible de charger la playlist. Vérifiez son accès et les autorisations CORS.</div>';
+$("totalStatus").textContent="Erreur de chargement";
+}
+}
+
+$("search").addEventListener("input",render);
+start();
+</script>
+
+</body>
+ </html>
+ 
